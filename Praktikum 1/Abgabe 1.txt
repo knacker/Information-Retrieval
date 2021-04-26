@@ -37,5 +37,48 @@ Folien 2-8 2-9
 
 4)
 i)Makrobewertung
-
+Beschreibt den nutzungsorientierten Ansatz, wobei hier alle Experimente unabhängig von ihrer Ergebnisgröße gleich
+eingehen in die Bewertung. Wenn einzelne Anfragen leere Ergebnisse liefern, kann es zu Division durch 0 kommen.
 ii)Mikrobewertung
+Beschreibt den systemorientierten Ansantz, wobei hier alle Anfragen mit einer größeren Ergebnismenge stärker eingehen.
+Die Summe aller Anfragen wird als ganzes betrachtet.
+
+5)
+a - relevant
+b - nicht relevant
+c - nicht gefundene, relevante dokumente
+
+a)
+Makrobewertung:
+	Recall: 1/4 * (4/12 + 6/13 + 13/28 + 15/23) = 0,48
+	Precision: 1/4 * (4/27 + 6/31 + 13/58 + 15/70) = 0,2	
+Mikrobewertung:
+	Recall: (4+6+13+15) / (12+13+28+23) = 0,5
+	Precision: (4+6+13+15) / (27+31+58+70) = 0,2
+	
+b)
+Makrobewertung:
+	Recall: 1/4 * (1/5 + 7/21 + 11/26 + 19/31) = 0,39
+	Precision: 1/4 * (1/80 + 7/80 + 11/80 + 19/80) = 0,12	
+Mikrobewertung:
+	Recall: (1+7+11+19) / (5+21+26+31) = 0,46
+	Precision: (1+7+11+19) / (80+80+80+80) = 0,12
+	
+6)
+Relevanzbeurteilung einer Stichprobe durch Berechnung
+=> Anzahl relevanter Dokumente wird geteilt durch Gesamtzahl der Dokumente
+=> Stichprobe muss groß sein 
+
+Dokument-Source-Methode
+=> zufälliges Dokument wird aus Datenbasis gewählt
+=> man formuliert eine Frage, ob Dokument relevant ist
+=> es wird geprüft, ob das Dokument tatsächlich in der Antwort ist 
+=> über mehrere Dokumente und Anfragen ergibt sich ein Wert für den Recall 
+=> keine "echten" Benutzerfragen
+
+Anfrageerweiterung
+=> Anfrage wird erweitert, sodass Obermenge der ursprüngliche Antwortmenge gefunden wird
+
+Abgleich mit externen Quellen
+=> parallel mit unabhängigen Methoden relevante Dokumente bestimmen 
+	
