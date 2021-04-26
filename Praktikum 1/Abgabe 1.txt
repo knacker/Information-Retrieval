@@ -1,0 +1,41 @@
+1.
+1)
+Die DATEN liegen nur vereinzelt vor. Das heißt, die Integer drücken eine Anzahl aus (1,400, 99) und die
+Wörter dazu haben allein auch keinen Zusammenhang(Glas, Nutella, Gramm, nur, Cent)
+Durch das Zusammensetzen der Wörter entsteht ein Zusammenhang, aus dem sich dann INFORMATIONEN gewinnen lässt.
+Es liegt also vor : 1 Glas Nutella, 400 Gramm für 99 Cent
+Aus dem subjektiven Verständnis heraus ergibt sich nun das Wissen. Man weiß, dass es 1 Glas Nutella, welches 400 Gramm enthält für 99 Cent zu kaufen gibt. 
+
+2)
+Web- Suchmaschinen 
+-> Inhaltsbasierte suche auf Text
+-> Aufgabenstellungen: Anfragebearbeitung, Browsing, Information Filtering
+
+Reverse Image Search
+-> Inhaltsbasierte suche auf Bildern
+-> Aufgabenstellungen: 
+
+//TODO
+Eins fehlt noch aber keine Ahnung
+
+
+2.
+1)
+In Datenbanksystemen wird mit exakten Anfragen gearbeitet, welche keine Fehlertoleranz haben. Das heißt, 
+eine Anfrage beschreibt genau, welches Ergebnis man zurückbekommen wird.
+Auf der anderen Seiten arbeiten IR-Systeme mit Ähnlichkeiten. Das heißt, wir haben hier keine exakte Übereinstimmung,
+sondern es werden basierend auf Ähnlichkeiten Ergebnisse "vorgeschlagen", die potenziell das enthalten können, was dem eigentlichen
+Ziel der Suchanfrage entspricht.
+
+2)
+Relevance: Beschreibt, ob ein Dokument von Bedeutung für die gewünschte Information ist, oder nicht
+Precision: Beschreibt den Anteil der relevanten Dokumente im Ergebnis. => beschreibt also, wie genau ein Ergebnis ist
+Recall: Beschreibt, ob die Ergebnisse vollständig sind. => Gefundene RELEVANTE Dokumentegemessen an der Gesamtzahl der RELEVANTEN Dokumente
+
+3)
+Folien 2-8 2-9
+
+4)
+i)Makrobewertung
+
+ii)Mikrobewertung
