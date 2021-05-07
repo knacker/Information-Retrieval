@@ -119,7 +119,7 @@ to identify, transcribe and proofread public domain works.
 Despite these efforts, the Project's etexts and any medium they
 may be on may contain errors and defects (collectively, the
 "Defects").  Among other things, such Defects may take the form
-of incomplete, inaccurate or corrupt data, transcription errors,
+of incomplete, inaccurate or corrupt data.FilterList, transcription errors,
 unauthorized distribution of a work that is not in the public
 domain, a defective or damaged disk or other etext medium, a
 computer virus, or computer codes that damage or cannot be read
