@@ -27,7 +27,15 @@ public class FilterList {
 
     //grundstamm reduktions liste kommt hier dann hinzu
     public static FilterList createRE() {
-        return null;
+        //filterlist used for Stopwords
+        List<String> lines = null;
+        try {
+            lines = Files.readAllLines(Paths.get("null"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new FilterList(lines);
     }
 
     public List<String> getList() {
