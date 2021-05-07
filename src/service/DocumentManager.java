@@ -5,11 +5,13 @@ import data.FilterList;
 import data.Model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Scanner;
 
 public class DocumentManager {
 
@@ -23,8 +25,41 @@ public class DocumentManager {
     public DocumentManager() {
     }
 
-    public void createDocuments(File txt) {
+    public void createDocuments() {
 
+        File file = new File("/res/aesopa10.txt");
+
+        try {
+            int i = 0;
+            Scanner sc = new Scanner(file);
+            while(sc.hasNextLine()) {
+
+                String title = "";
+                String content = "";
+
+                sc.nextLine();
+                sc.nextLine();
+                sc.nextLine();
+
+                title = sc.nextLine();
+
+                sc.nextLine();
+                sc.nextLine();
+
+                while(sc.nextLine() != "") {
+                    content += sc.nextLine();
+                }
+
+                Document doc = new Document(i, title, content);
+                docs.add(doc);
+
+                i++;
+            }
+            sc.close();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Document> searchDocuments(List<String> search, Model.modelType m) {
