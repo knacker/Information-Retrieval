@@ -10,10 +10,11 @@ public class Main {
         handle(dm);
 
         System.out.println("Done!");
+
     }
 
     //hier console eingaben handlen(gui quasi)
     public static void handle(DocumentManager dm) {
-
+        dm.createDocuments();
     }
 }

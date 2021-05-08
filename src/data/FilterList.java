@@ -17,7 +17,7 @@ public class FilterList {
         //filterlist used for Stopwords
         List<String> lines = null;
         try {
-            lines = Files.readAllLines(Paths.get("/res/englishST.txt"));
+            lines = Files.readAllLines(Paths.get(".\\res\\englishST.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }
