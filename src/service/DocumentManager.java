@@ -4,12 +4,10 @@ import data.Document;
 import data.FilterList;
 import data.Model;
 
+import javax.print.Doc;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,14 +18,14 @@ public class DocumentManager {
     //private FilterList re = FilterList.createRE();
 
     //initialize doclist
-    private List<Document> docs = null;
+    private List<Document> docs = new ArrayList<Document>();
 
     public DocumentManager() {
     }
 
     public void createDocuments() {
 
-        File file = new File("/res/aesopa10.txt");
+        File file = new File(".\\res\\aesopa10.txt");
 
         try {
             int i = 0;
