@@ -34,7 +34,7 @@ public class DocumentManager {
             for (int j = 0; j < 307; j++) {
                 br.readLine();
             }
-            
+            String empty = " ";
             String line = "";
             String title = "";
             String content = "";
@@ -66,9 +66,12 @@ public class DocumentManager {
                     if (line.equals("")) {
                         blanklineCount++;
                     }
-                    content += line;
+                    content += " " + line;
                 }
             }
+            //add last document
+            Document doc = new Document(i, title, content);
+            docs.add(doc);
 
         } catch (IOException e) {
             e.printStackTrace();
