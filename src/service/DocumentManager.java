@@ -4,15 +4,15 @@ import data.Document;
 import data.FilterList;
 import data.Model;
 
-import javax.print.Doc;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class DocumentManager {
 
+    enum State {
+        READ_CONTENT, READ_TITLE
+    }
     //initialize stopword list and "grundstammreduktionslist", welche aber noch nicht vorhanden ist
     private FilterList sw = FilterList.createSW();
     //private FilterList re = FilterList.createRE();
@@ -25,11 +25,64 @@ public class DocumentManager {
 
     public void createDocuments() {
 
-        File file = new File(".\\res\\aesopa10.txt");
+        int i = 0;
+        int blanklineCount = 3;
+       // File file = new File(".\\res\\aesopa10.txt");
 
+        try (BufferedReader br = new BufferedReader(new FileReader(".\\res\\aesopa10.txt"))) {
+
+            for (int j = 0; j < 307; j++) {
+                br.readLine();
+            }
+
+
+            String line = "";
+            String title = "";
+            String content = "";
+
+            //start reading content
+            while((line = br.readLine()) != null) {
+
+                if (blanklineCount == 3) {
+
+                    if (!content.equals("")) {
+
+                        Document doc = new Document(i, title, content);
+                        docs.add(doc);
+
+                        content = "";
+                        title = "";
+
+                        i++;
+                    }
+                    title = line;
+                    blanklineCount = 0;
+
+                    continue;
+                }
+                if (!line.equals("")) blanklineCount = 0;
+
+                if (blanklineCount < 3) {
+
+                    if (line.equals("")) {
+                        blanklineCount++;
+                    }
+                    content += line;
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /*
         try {
             int i = 0;
-            Scanner sc = new Scanner(file);
+          //  Scanner sc = new Scanner(file);
+            br.
+            for(int j = 0; j <= 303; j++) {
+                sc.nextLine();
+            }
+
             while(sc.hasNextLine()) {
 
                 String title = "";
@@ -44,7 +97,10 @@ public class DocumentManager {
                 sc.nextLine();
                 sc.nextLine();
 
-                while(sc.nextLine() != "") {
+                while(sc.hasNextLine()) {
+                    if(sc.findInLine("(?=\\S)") != null) {
+                        break;
+                    }
                     content += sc.nextLine();
                 }
 
@@ -58,6 +114,8 @@ public class DocumentManager {
         catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+         */
     }
 
     public List<Document> searchDocuments(List<String> search, Model.modelType m) {
