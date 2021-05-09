@@ -34,8 +34,7 @@ public class DocumentManager {
             for (int j = 0; j < 307; j++) {
                 br.readLine();
             }
-
-
+            
             String line = "";
             String title = "";
             String content = "";
@@ -74,48 +73,6 @@ public class DocumentManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*
-        try {
-            int i = 0;
-          //  Scanner sc = new Scanner(file);
-            br.
-            for(int j = 0; j <= 303; j++) {
-                sc.nextLine();
-            }
-
-            while(sc.hasNextLine()) {
-
-                String title = "";
-                String content = "";
-
-                sc.nextLine();
-                sc.nextLine();
-                sc.nextLine();
-
-                title = sc.nextLine();
-
-                sc.nextLine();
-                sc.nextLine();
-
-                while(sc.hasNextLine()) {
-                    if(sc.findInLine("(?=\\S)") != null) {
-                        break;
-                    }
-                    content += sc.nextLine();
-                }
-
-                Document doc = new Document(i, title, content);
-                docs.add(doc);
-
-                i++;
-            }
-            sc.close();
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-         */
     }
 
     public List<Document> searchDocuments(List<String> search, Model.modelType m) {
