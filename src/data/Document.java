@@ -28,6 +28,13 @@ public class Document {
         return true;
     }
 
+    public String getName () {
+        return this.name;
+    }
+
+    public String getContent() {
+        return this.content;
+    }
     public void showContent() {
         System.out.println(content);
     }

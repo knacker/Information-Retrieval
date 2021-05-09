@@ -34,7 +34,7 @@ public class DocumentManager {
             for (int j = 0; j < 307; j++) {
                 br.readLine();
             }
-            String empty = " ";
+
             String line = "";
             String title = "";
             String content = "";
@@ -66,7 +66,7 @@ public class DocumentManager {
                     if (line.equals("")) {
                         blanklineCount++;
                     }
-                    content += " " + line;
+                    content += " " + line + "\n";
                 }
             }
             //add last document
@@ -82,9 +82,30 @@ public class DocumentManager {
         return docs;
     }
 
-    public boolean saveDocs(String path) {
+    public boolean saveDocs() {
 
-        //if successful
+        int i = 0;
+        for (Document doc: docs) {
+
+            String filename = docs.get(i).getName().toLowerCase().substring(2) + ".txt";
+            filename.strip();
+            filename =  filename.replaceAll("\\s", "_");
+
+            try {
+
+                BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+                bw.write(docs.get(i).getContent());
+
+                bw.flush();
+                bw.close();
+
+                i++;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
         return true;
     }
 
