@@ -27,7 +27,6 @@ public class DocumentManager {
 
         int i = 0;
         int blanklineCount = 3;
-       // File file = new File(".\\res\\aesopa10.txt");
 
         try (BufferedReader br = new BufferedReader(new FileReader(".\\res\\aesopa10.txt"))) {
 
@@ -93,7 +92,7 @@ public class DocumentManager {
 
             try {
 
-                BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+                BufferedWriter bw = new BufferedWriter(new FileWriter(".\\saved_documents\\" + filename));
                 bw.write(docs.get(i).getContent());
 
                 bw.flush();
