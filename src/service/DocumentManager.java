@@ -118,7 +118,7 @@ public class DocumentManager {
             System.out.println("Documents already loaded!");
             return false;
         } else {
-            Path dir = Paths.get(".\\saved_documents\\");
+            Path dir = Paths.get(".\\saved_documents");
             try {
                 Files.walk(dir).forEach(path -> {
                     try {
@@ -139,7 +139,7 @@ public class DocumentManager {
 
     public void loadFile(File file) throws IOException {
 
-        if(file.isDirectory()) {
+        if(!file.isDirectory()) {
             String title = "";
             String content = "";
             String line = "";
@@ -156,6 +156,7 @@ public class DocumentManager {
                 docs.add(doc);
             }
         }
+
     }
 
     public double calculateRecall() {
