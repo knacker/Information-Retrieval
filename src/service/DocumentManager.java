@@ -5,6 +5,9 @@ import data.FilterList;
 import data.Model;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +96,7 @@ public class DocumentManager {
             try {
 
                 BufferedWriter bw = new BufferedWriter(new FileWriter(".\\saved_documents\\" + filename));
+                bw.write(docs.get(i).getName() + "\n");
                 bw.write(docs.get(i).getContent());
 
                 bw.flush();
@@ -108,10 +112,50 @@ public class DocumentManager {
         return true;
     }
 
-    public boolean loadDocs(String path) {
+    public boolean loadDocs() {
 
-        //if successful
-        return true;
+        if(!docs.isEmpty()) {
+            System.out.println("Documents already loaded!");
+            return false;
+        } else {
+            Path dir = Paths.get(".\\saved_documents\\");
+            try {
+                Files.walk(dir).forEach(path -> {
+                    try {
+                        loadFile(path.toFile());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+            //if successful
+            System.out.println("Documents loaded!");
+            return true;
+        }
+    }
+
+    public void loadFile(File file) throws IOException {
+
+        if(file.isDirectory()) {
+            String title = "";
+            String content = "";
+            String line = "";
+
+            try(BufferedReader br = new BufferedReader(new FileReader(file.getAbsolutePath()))) {
+
+                title = br.readLine();
+
+                while((line = br.readLine()) != null) {
+                    content+= line;
+
+                }
+                Document doc = new Document(docs.size(), title, content);
+                docs.add(doc);
+            }
+        }
     }
 
     public double calculateRecall() {

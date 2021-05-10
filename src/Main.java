@@ -18,6 +18,5 @@ public class Main {
     //hier console eingaben handlen(gui quasi)
     public static void handle(DocumentManager dm) {
         dm.createDocuments();
-        dm.saveDocs();
     }
 }
