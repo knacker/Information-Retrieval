@@ -9,14 +9,10 @@ public class Main {
         System.out.println("Launching...");
 
         DocumentManager dm = new DocumentManager();
-        handle(dm);
+        dm.handle();
 
         System.out.println("Done!");
 
     }
 
-    //hier console eingaben handlen(gui quasi)
-    public static void handle(DocumentManager dm) {
-        dm.createDocuments();
-    }
 }

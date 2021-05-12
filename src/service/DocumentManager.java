@@ -13,17 +13,22 @@ import java.util.List;
 
 public class DocumentManager {
 
-    enum State {
-        READ_CONTENT, READ_TITLE
-    }
     //initialize stopword list and "grundstammreduktionslist", welche aber noch nicht vorhanden ist
     private FilterList sw = FilterList.createSW();
-    //private FilterList re = FilterList.createRE();
 
     //initialize doclist
     private List<Document> docs = new ArrayList<Document>();
 
+    DocumentOperator operator;
+
     public DocumentManager() {
+        operator = new DocumentOperator();
+    }
+
+   //hier eingaben handlen
+    public void handle() {
+       // createDocuments();
+        //saveDocs();
     }
 
     public void createDocuments() {
@@ -42,7 +47,7 @@ public class DocumentManager {
             String content = "";
 
             //start reading content
-            while((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
 
                 if (blanklineCount == 3) {
 
@@ -80,18 +85,14 @@ public class DocumentManager {
         }
     }
 
-    public List<Document> searchDocuments(List<String> search, Model.modelType m) {
-        return docs;
-    }
-
     public boolean saveDocs() {
 
         int i = 0;
-        for (Document doc: docs) {
+        for (Document doc : docs) {
 
             String filename = docs.get(i).getName().toLowerCase().substring(2) + ".txt";
             filename.strip();
-            filename =  filename.replaceAll("\\s", "_");
+            filename = filename.replaceAll("\\s", "_");
 
             try {
 
@@ -114,7 +115,7 @@ public class DocumentManager {
 
     public boolean loadDocs() {
 
-        if(!docs.isEmpty()) {
+        if (!docs.isEmpty()) {
             System.out.println("Documents already loaded!");
             return false;
         } else {
@@ -131,43 +132,36 @@ public class DocumentManager {
                 e.printStackTrace();
                 return false;
             }
-            //if successful
+        }
+        //if successful
+        if (!docs.isEmpty()) {
             System.out.println("Documents loaded!");
             return true;
         }
+        return false;
     }
 
     public void loadFile(File file) throws IOException {
 
-        if(!file.isDirectory()) {
+        if (!file.isDirectory()) {
             String title = "";
             String content = "";
             String line = "";
 
-            try(BufferedReader br = new BufferedReader(new FileReader(file.getAbsolutePath()))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(file.getAbsolutePath()))) {
 
                 title = br.readLine();
 
-                while((line = br.readLine()) != null) {
-                    content+= line;
+                while ((line = br.readLine()) != null) {
+                    content += line;
 
                 }
                 Document doc = new Document(docs.size(), title, content);
                 docs.add(doc);
             }
+        } else {
+            return;
         }
 
-    }
-
-    public double calculateRecall() {
-        double recall = 0;
-
-        return recall;
-    }
-
-    public double calculatePrecision() {
-        double precision = 0;
-
-        return precision;
     }
 }

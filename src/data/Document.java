@@ -1,13 +1,5 @@
 package data;
 
-import data.FilterList;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
 public class Document {
 
     private int id;
@@ -18,10 +10,6 @@ public class Document {
         this.id = id;
         this.name = name;
         this.content = content;
-    }
-
-    public void filter(FilterList filter) {
-        //filtert irgendwas irgendwie
     }
 
     public boolean isRelevant() {
