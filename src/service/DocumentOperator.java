@@ -6,6 +6,7 @@ import data.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DocumentOperator {
 
@@ -19,14 +20,32 @@ public class DocumentOperator {
     }
 
 
-    public List<Document> filterWords(List<Document> docs, FilterList filter) {
+    public List<Document> filterWords(List<Document> docs, FilterList filterL) {
 
         List<Document> filteredDocs = new ArrayList<Document>();
-        //filtert irgendwas irgendwie
+
+        String content;
+
+        //filter
+        for (Document doc: docs) {
+
+            int i = 0;
+            content = doc.getContent();
+            content.replaceAll("[.,;:\"!?]", "");
+            content = content.toLowerCase();
+
+            for(String filter : filterL.getList()) {
+                content.replaceAll(filter, "");
+            }
+
+            Document filteredDoc = new Document(i, doc.getName(), content);
+            filteredDocs.add(filteredDoc);
+            i++;
+
+        }
+
         return filteredDocs;
     }
-
-
 
     public void linearSearch() {
 
