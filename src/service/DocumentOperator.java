@@ -6,7 +6,6 @@ import data.Model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class DocumentOperator {
 
@@ -15,10 +14,11 @@ public class DocumentOperator {
 
     public List<Document> searchDocuments(List<Document> docs, List<String> search, Model m) {
         List<Document> foundDocs = new ArrayList<Document>();
-
+        if (m == Model.BOOL) {
+            foundDocs = linearSearch(docs, search, foundDocs);
+        }
         return foundDocs;
     }
-
 
     public List<Document> filterWords(List<Document> docs, FilterList filterL) {
 
@@ -27,14 +27,14 @@ public class DocumentOperator {
         String content;
 
         //filter
-        for (Document doc: docs) {
+        for (Document doc : docs) {
 
             int i = 0;
             content = doc.getContent();
-            content.replaceAll("[.,;:\"!?]", "");
+            content.replaceAll("[.,;:\"!?\n]", "");
             content = content.toLowerCase();
 
-            for(String filter : filterL.getList()) {
+            for (String filter : filterL.getList()) {
                 content.replaceAll(filter, "");
             }
 
@@ -47,9 +47,15 @@ public class DocumentOperator {
         return filteredDocs;
     }
 
-    public void linearSearch() {
-
+    private List<Document> linearSearch(List<Document> docs, List<String> search, List<Document> foundDocs) {
+        for (Document doc : docs) {
+            if (matchString(search, doc)) {
+                foundDocs.add(doc);
+            }
+        }
+        return foundDocs;
     }
+
 
     public void compareSignature() {
 
@@ -59,8 +65,16 @@ public class DocumentOperator {
 
     }
 
-    public void matchString() {
-
+    public boolean matchString(List<String> searchTerms, Document doc) {
+        if (searchTerms.size() == 0) {
+            return true;
+        }
+        if (doc.getContent().contains(searchTerms.get(0))) {
+            matchString(searchTerms.subList(0, searchTerms.size()), doc);
+        } else {
+            return false;
+        }
+        return false;
     }
 
     public void invertList() {
