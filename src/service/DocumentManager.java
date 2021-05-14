@@ -29,10 +29,10 @@ public class DocumentManager {
     public void handle() {
         List<String> testi = new ArrayList<>();
         List<Document> ergebnis = new ArrayList<>();
-        testi.add("wolf");
+        testi.add("cock");
         createDocuments();
-        operator.linearSearch(docs, testi, ergebnis);
-        System.out.println(ergebnis);
+        ergebnis = operator.filterWords(docs, sw);
+        System.out.println(ergebnis.get(0).getContent());
         //saveDocs();
     }
 

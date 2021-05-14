@@ -32,11 +32,11 @@ public class DocumentOperator {
 
             int i = 0;
             content = doc.getContent();
-            content.replaceAll("[.,;:\"!?\n]", "");
+            content = content.replaceAll("[.,;:\"!?\n]", "");
             content = content.toLowerCase();
 
             for (String filter : filterL.getList()) {
-                content.replaceAll(filter, "");
+                content = content.replaceAll(" " + filter + " ", " ");
             }
 
             Document filteredDoc = new Document(i, doc.getName(), content);
@@ -70,8 +70,10 @@ public class DocumentOperator {
         if (searchTerms.size() == 0) {
             return true;
         }
-        if (content.toLowerCase().contains(searchTerms.get(0))) {
-            matchString(searchTerms.subList(1, searchTerms.size()), content);
+        if (content.toLowerCase().contains(searchTerms.get(0).toLowerCase())) {
+            if(true & matchString(searchTerms.subList(1, searchTerms.size()), content)) {
+                return true;
+            }
         } else {
             return false;
         }
