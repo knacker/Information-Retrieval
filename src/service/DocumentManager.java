@@ -27,7 +27,12 @@ public class DocumentManager {
 
    //hier eingaben handlen
     public void handle() {
-        //createDocuments();
+        List<String> testi = new ArrayList<>();
+        List<Document> ergebnis = new ArrayList<>();
+        testi.add("wolf");
+        createDocuments();
+        operator.linearSearch(docs, testi, ergebnis);
+        System.out.println(ergebnis);
         //saveDocs();
     }
 

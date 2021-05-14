@@ -6,6 +6,7 @@ import data.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DocumentOperator {
 
@@ -47,9 +48,9 @@ public class DocumentOperator {
         return filteredDocs;
     }
 
-    private List<Document> linearSearch(List<Document> docs, List<String> search, List<Document> foundDocs) {
+    public List<Document> linearSearch(List<Document> docs, List<String> search, List<Document> foundDocs) {
         for (Document doc : docs) {
-            if (matchString(search, doc)) {
+            if (matchString(search, doc.getContent())) {
                 foundDocs.add(doc);
             }
         }
@@ -65,12 +66,12 @@ public class DocumentOperator {
 
     }
 
-    public boolean matchString(List<String> searchTerms, Document doc) {
+    private boolean matchString(List<String> searchTerms, String content) {
         if (searchTerms.size() == 0) {
             return true;
         }
-        if (doc.getContent().contains(searchTerms.get(0))) {
-            matchString(searchTerms.subList(0, searchTerms.size()), doc);
+        if (content.toLowerCase().contains(searchTerms.get(0))) {
+            matchString(searchTerms.subList(1, searchTerms.size()), content);
         } else {
             return false;
         }
