@@ -4,12 +4,14 @@ import data.Document;
 import data.FilterList;
 import data.Model;
 
+import javax.print.Doc;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class DocumentManager {
 
@@ -27,13 +29,74 @@ public class DocumentManager {
 
    //hier eingaben handlen
     public void handle() {
-        List<String> testi = new ArrayList<>();
-        List<Document> ergebnis = new ArrayList<>();
-        testi.add("cock");
+        boolean done = false;
+
         createDocuments();
-        ergebnis = operator.filterWords(docs, sw);
-        System.out.println(ergebnis.get(0).getContent());
-        //saveDocs();
+
+        List<Document> response = new ArrayList<>();
+
+        while (!done) {
+            int task = getTask();
+
+            if (task == 1 || task == 2) {
+                String searchWord = getSearchWord();
+                List<String> searchTerm = new ArrayList<>();
+                searchTerm.add(searchWord);
+
+                if (task == 1) {
+                    response = DocumentOperator.linearSearch(docs, searchTerm);
+                } else if (task == 2) {
+                    List<Document> clearedDocs = operator.filterWords(docs, sw);
+                    response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
+                }
+
+                printSearchResponse(response);
+
+            } else if (task == 3) {
+                saveDocs();
+            } else if (task == 4) {
+                done = true;
+            }
+        }
+    }
+
+    private void printSearchResponse(List<Document> response) {
+        System.out.println("Deine Suche hat folgende relevante Dokumente geliefert : ");
+        for (Document doc: response) {
+            System.out.println(doc.getName());
+        }
+    }
+
+    private String getSearchWord() {
+        Scanner scanner = new Scanner(new InputStreamReader(System.in));
+
+        System.out.print("Gebe ein Suchwort ein : ");
+
+        return scanner.nextLine();
+    }
+
+    private int getTask() {
+
+        Scanner scanner = new Scanner(new InputStreamReader(System.in));
+
+        System.out.println("\n\nDokumentverwaltung");
+        System.out.println("==================");
+        System.out.println("1. Lineare Suche (Originaldokumente)");
+        System.out.println("2. Lineare Suche (bereinigte Dokumente)");
+        System.out.println("3. Dokumente speichern");
+        System.out.println("4. Programm beenden");
+        System.out.println();
+        System.out.print("> ");
+
+        int task = 0;
+
+        try {
+            task = Integer.parseInt(scanner.nextLine());
+        } catch (Exception e) {
+            System.out.println("Fehlerhafte Eingabe " + e);
+        }
+
+        return task;
     }
 
     public void createDocuments() {
@@ -66,7 +129,7 @@ public class DocumentManager {
 
                         i++;
                     }
-                    title = line;
+                    title = removePrefixSpace(line);
                     blanklineCount = 0;
 
                     continue;
@@ -90,32 +153,32 @@ public class DocumentManager {
         }
     }
 
-    public boolean saveDocs() {
+    public void saveDocs() {
 
-        int i = 0;
         for (Document doc : docs) {
 
-            String filename = docs.get(i).getName().toLowerCase().substring(2) + ".txt";
+            String filename = doc.getName().toLowerCase() + ".txt";
             filename.strip();
             filename = filename.replaceAll("\\s", "_");
 
             try {
 
                 BufferedWriter bw = new BufferedWriter(new FileWriter(".\\saved_documents\\" + filename));
-                bw.write(docs.get(i).getName() + "\n");
-                bw.write(docs.get(i).getContent());
+                bw.write(doc.getName() + "\n");
+                bw.write(doc.getContent());
 
                 bw.flush();
                 bw.close();
 
-                i++;
             } catch (IOException e) {
-                e.printStackTrace();
+                // if failed then create File and run saveDocs again
+
+                new File(".\\saved_documents").mkdirs();
+                
+                saveDocs();
             }
 
         }
-
-        return true;
     }
 
     public boolean loadDocs() {
@@ -167,6 +230,17 @@ public class DocumentManager {
         } else {
             return;
         }
+    }
 
+    private String removePrefixSpace(String name) {
+        String newName = name;
+        int i = 0;
+
+        while (name.charAt(i) == ' ') {
+            i++;
+            newName = name.substring(i);
+        }
+
+        return newName;
     }
 }

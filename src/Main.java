@@ -1,9 +1,14 @@
 import service.DocumentManager;
 
-import java.io.IOException;
+/**
+ * TODOS:
+ *  - Ordner "saved_documents" muss erstellt werden, falls er nicht vorhanden ist
+ *  - User-Inputs in handle() ermöglichen
+ *  - 3.2
+ *  - eventuell createDocuments() überarbeiten
+ */
 
 public class Main {
-
     public static void main(String[] args) {
 
         System.out.println("Launching...");
@@ -11,8 +16,7 @@ public class Main {
         DocumentManager dm = new DocumentManager();
         dm.handle();
 
-        System.out.println("Done!");
+        System.out.println("\nDone!");
 
     }
-
 }
