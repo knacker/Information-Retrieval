@@ -19,7 +19,7 @@ public class DocumentManager {
     private FilterList sw = FilterList.createSW();
 
     //initialize doclist
-    private List<Document> docs = new ArrayList<Document>();
+    private List<Document> docs = new ArrayList<>();
 
     DocumentOperator operator;
 
@@ -27,7 +27,9 @@ public class DocumentManager {
         operator = new DocumentOperator();
     }
 
-   //hier eingaben handlen
+    /**
+     * handle user inputs here
+     */
     public void handle() {
         boolean done = false;
 
@@ -40,12 +42,13 @@ public class DocumentManager {
 
             if (task == 1 || task == 2) {
                 String searchWord = getSearchWord();
+                // searchTerm includes for Praktikum 2 only one word, later maybe more
                 List<String> searchTerm = new ArrayList<>();
                 searchTerm.add(searchWord);
 
                 if (task == 1) {
                     response = DocumentOperator.linearSearch(docs, searchTerm);
-                } else if (task == 2) {
+                } else {
                     List<Document> clearedDocs = operator.filterWords(docs, sw);
                     response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
                 }
@@ -60,6 +63,10 @@ public class DocumentManager {
         }
     }
 
+    /**
+     * print each document from response list
+     * @param response relevant documents
+     */
     private void printSearchResponse(List<Document> response) {
         System.out.println("Deine Suche hat folgende relevante Dokumente geliefert : ");
         for (Document doc: response) {
@@ -67,6 +74,9 @@ public class DocumentManager {
         }
     }
 
+    /**
+     * @return search input of the user
+     */
     private String getSearchWord() {
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
 
@@ -75,11 +85,14 @@ public class DocumentManager {
         return scanner.nextLine();
     }
 
+    /**
+     * @return choosen task
+     */
     private int getTask() {
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
 
-        System.out.println("\n\nDokumentverwaltung");
+        System.out.println("\n\nInformation Retrieval System");
         System.out.println("==================");
         System.out.println("1. Lineare Suche (Originaldokumente)");
         System.out.println("2. Lineare Suche (bereinigte Dokumente)");
@@ -99,12 +112,23 @@ public class DocumentManager {
         return task;
     }
 
+    /**
+     * create Documents from the data aesopa10.txt
+     */
     public void createDocuments() {
 
         int i = 0;
         int blanklineCount = 3;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(".\\res\\aesopa10.txt"))) {
+        String fileName;
+
+        if (isWindows()) {
+            fileName = ".\\res\\aesopa10.txt";
+        } else {
+            fileName = "./res/aesopa10.txt";
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
 
             for (int j = 0; j < 307; j++) {
                 br.readLine();
@@ -161,9 +185,17 @@ public class DocumentManager {
             filename.strip();
             filename = filename.replaceAll("\\s", "_");
 
-            try {
+            String dirName;
 
-                BufferedWriter bw = new BufferedWriter(new FileWriter(".\\saved_documents\\" + filename));
+            if (isWindows()) {
+                dirName = ".\\saved_documents\\" + filename;
+            } else {
+                dirName = "./saved_documents/" + filename;
+            }
+
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(dirName));
+
                 bw.write(doc.getName() + "\n");
                 bw.write(doc.getContent());
 
@@ -171,14 +203,27 @@ public class DocumentManager {
                 bw.close();
 
             } catch (IOException e) {
-                // if failed then create File and run saveDocs again
+                // if failed then create directory and run saveDocs again
+                String newDirName;
 
-                new File(".\\saved_documents").mkdirs();
-                
+                if (isWindows()) {
+                    newDirName = ".\\saved_documents";
+                } else {
+                    newDirName = "./saved_documents";
+                }
+
+                new File(newDirName).mkdirs();
+
                 saveDocs();
             }
 
         }
+    }
+
+    private boolean isWindows() {
+        String os = System.getProperty("os.name").toLowerCase();
+
+        return (os.contains("win"));
     }
 
     public boolean loadDocs() {
