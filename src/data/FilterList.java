@@ -1,5 +1,7 @@
 package data;
 
+import service.DocumentManager;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,8 +18,17 @@ public class FilterList {
     public static FilterList createSW() {
         //filterlist used for Stopwords
         List<String> lines = null;
+
+        String path;
+        if (DocumentManager.isWindows()) {
+            path = ".\\res\\englishST.txt";
+        } else {
+            path = "./res/englishST.txt";
+        }
+
+
         try {
-            lines = Files.readAllLines(Paths.get(".\\res\\englishST.txt"));
+            lines = Files.readAllLines(Paths.get(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,4 +52,12 @@ public class FilterList {
     public List<String> getList() {
         return this.filter;
     }
+
+    private static boolean isWindows() {
+        String os = System.getProperty("os.name").toLowerCase();
+
+        return (os.contains("win"));
+    }
+
 }
+

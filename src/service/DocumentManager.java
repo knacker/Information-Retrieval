@@ -94,6 +94,7 @@ public class DocumentManager {
 
         System.out.println("\n\nInformation Retrieval System");
         System.out.println("==================");
+
         System.out.println("1. Lineare Suche (Originaldokumente)");
         System.out.println("2. Lineare Suche (bereinigte Dokumente)");
         System.out.println("3. Dokumente speichern");
@@ -220,7 +221,7 @@ public class DocumentManager {
         }
     }
 
-    private boolean isWindows() {
+    public static boolean isWindows() {
         String os = System.getProperty("os.name").toLowerCase();
 
         return (os.contains("win"));
