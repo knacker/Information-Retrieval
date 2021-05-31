@@ -17,8 +17,12 @@ public class DocumentOperator {
         if (m == Model.BOOL) {
             foundDocs = linearSearch(docs, search);
         }
+        if (m == Model.INVERTED) {
+            foundDocs = invertedSearch(docs, search);
+        }
         return foundDocs;
     }
+
 
     public List<Document> filterWords(List<Document> docs, FilterList filterL) {
 
@@ -59,6 +63,11 @@ public class DocumentOperator {
         }
         return foundDocs;
     }
+    private List<Document> invertedSearch(List<Document> docs, List<String> search) {
+        List<Document> foundDocs = new ArrayList<>();
+
+        return foundDocs;
+    }
 
     public void compareSignature() {
 
@@ -81,7 +90,19 @@ public class DocumentOperator {
         }
         return false;
     }
+    /*The \rules\ for removing a suffix will be given in the form
 
+    (condition) S1 -> S2
+
+    This means that if a word ends with the suffix S1, and the stem before S1
+    satisfies the given condition, S1 is replaced by S2. The condition is
+    usually given in terms of m, e.g. ....
+    Ab Zeile 175 weiterlesen
+     */
+    public String removeSuffix(String word) {
+        String newWord = "";
+        return newWord;
+    }
     public void invertList() {
 
     }

@@ -1,5 +1,5 @@
 package data;
 
 public enum Model {
-    BOOL, VECTOR
+    BOOL, VECTOR, INVERTED
 }
