@@ -9,6 +9,9 @@ import java.util.List;
 
 public class DocumentOperator {
 
+    private static final char consonant = 'C';
+    private static final char vowel = 'V';
+
     public DocumentOperator() {
     }
 
@@ -22,7 +25,6 @@ public class DocumentOperator {
         }
         return foundDocs;
     }
-
 
     public List<Document> filterWords(List<Document> docs, FilterList filterL) {
 
@@ -90,19 +92,209 @@ public class DocumentOperator {
         }
         return false;
     }
-    /*The \rules\ for removing a suffix will be given in the form
 
-    (condition) S1 -> S2
-
-    This means that if a word ends with the suffix S1, and the stem before S1
-    satisfies the given condition, S1 is replaced by S2. The condition is
-    usually given in terms of m, e.g. ....
-    Ab Zeile 175 weiterlesen
-     */
-    public String removeSuffix(String word) {
-        String newWord = "";
-        return newWord;
+    public static String removeSuffix(String statement) {
+        return applyRules(statement);
     }
+
+    public static String applyRules(String statement) {
+        String s1 = step1a(statement);
+        String s2 = step1b(s1);
+        String s3 = step1c(s2);
+
+        return s3;
+    }
+
+    public static String step1a(String statement) {
+        String response = statement;
+
+        response = rule("sses", "ss", statement);
+
+        // rule not matched (else longest match for Step 1a found)
+        if (response.equals("")) {
+            response = rule("ies", "i", statement);
+        }
+
+        if (response.equals("")) {
+            response = rule("ss", "ss", statement);
+        }
+
+        if (response.equals("")) {
+            response = rule("s", "", statement);
+        }
+
+        return response;
+    }
+
+    public static String step1b(String statement) {
+        return null;
+    }
+
+    public static String step1c(String statement) {
+        return null;
+    }
+
+    private static String rule(String left, String right, String statement) {
+        String response = "";
+        // left -> right
+        String statement_left = statement.substring(statement.length() - left.length());
+        if (statement_left.equals(left)) {
+            response = statement.substring(0, statement.length() - left.length());
+            response += right;
+        }
+        return response;
+    }
+
+    /**
+     * @param word in lowercase
+     * @return [C](VC){m}[V] notation
+     */
+    public static String convertToConsonantVowelForm(String word) {
+        StringBuilder cv_form = new StringBuilder();
+
+        for (int i = 0; i < word.length(); i++) {
+            if (i == 0) {
+                if (isCharConsonant(word.charAt(i)) || word.charAt(i) == 'y') {
+                    cv_form.append(consonant);
+                } else {
+                    cv_form.append(vowel);
+                }
+            } else {
+                if (isCharConsonant(word.charAt(i)) != isCharConsonant(word.charAt(i-1)) || word.charAt(i) == 'y') {
+                    if (isCharConsonant(word.charAt(i))) {
+                        cv_form.append(consonant);
+                    } else {
+                        if (!isCharConsonant(word.charAt(i-1)) && word.charAt(i) == 'y') {
+                            cv_form.append(consonant);
+                        } else {
+                            cv_form.append(vowel);
+                        }
+                    }
+                }
+            }
+        }
+
+        return cv_form.toString();
+    }
+
+    public static String convertToCVForm(String statement) {
+        StringBuilder cv_form = new StringBuilder();
+
+        for (int i = 0; i < statement.length(); i++) {
+            if (statement.charAt(i) == 'y') {
+                if (cv_form.length() == 0 || cv_form.charAt(cv_form.length()-1) == vowel) {
+                    cv_form.append(consonant);
+                } else {
+                    cv_form.append(vowel);
+                }
+            } else if (isCharConsonant(statement.charAt(i))) {
+                if (cv_form.length() == 0 || cv_form.charAt(cv_form.length()-1) == vowel) {
+                    cv_form.append(consonant);
+                }
+            } else {
+                if (cv_form.length() == 0 || cv_form.charAt(cv_form.length()-1) == consonant) {
+                    cv_form.append(vowel);
+                }
+            }
+        }
+
+        return cv_form.toString();
+    }
+
+    private static boolean isCharConsonant(char c) {
+        List<Character> consonants = new ArrayList<>();
+        consonants.add('a');
+        consonants.add('e');
+        consonants.add('i');
+        consonants.add('o');
+        consonants.add('u');
+
+        return !consonants.contains(c);
+    }
+
+    /**
+     * condition *o
+     *
+     * @param statement
+     * @return true, if the statement ends cvc, where the second c is not W, X or Y (e.g.
+     *        -WIL, -HOP)
+     */
+    public static boolean statementEndsWithCVC(String statement) {
+        char third_last = statement.charAt(statement.length() - 3);
+        char second_last = statement.charAt(statement.length() - 2);
+        char last = statement.charAt(statement.length() - 1);
+
+        return (
+                isCharConsonant(third_last) &&
+                !isCharConsonant(second_last) &&
+                isCharConsonant(last) &&
+                (last != 'w' && last != 'y' && last != 'x')
+        );
+
+    }
+
+    /**
+     * condition *d
+     *
+     * @param statement
+     * @return true, if statement ends with double consonant
+     */
+    public static boolean statementEndsWithDoubleConsonant(String statement) {
+        char second_last = statement.charAt(statement.length() - 2);
+        char last = statement.charAt(statement.length() - 1);
+
+        return (second_last == last && isCharConsonant(second_last));
+    }
+
+    /**
+     * condition *v*
+     *
+     * @param statement
+     * @return true, if statement contains a vowel
+     */
+    public static boolean statementContainsVowel(String statement) {
+        return convertToConsonantVowelForm(statement).contains("" + vowel);
+    }
+
+    /**
+     * condition *S
+     *
+     * @param letter
+     * @param statement
+     * @return true, if statement ends with letter
+     */
+    public static boolean statementEndWithLetter(char letter, String statement) {
+        return statement.charAt(statement.length() - 1) == letter;
+    }
+
+    /**
+     * @param statement in lowercase notation
+     * @return m from converted word
+     */
+    public static int getMeasure(String statement) {
+        // in [C](VC){m}[V] notation
+        String notation = convertToCVForm(statement);
+
+        int measure = 0;
+
+        boolean v_read = false;
+
+        for (int i = 0; i < notation.length(); i++) {
+            if (v_read) {
+                if (notation.charAt(i) == consonant) {
+                    measure++;
+                    v_read = false;
+                }
+            } else {
+                if (notation.charAt(i) == vowel) {
+                    v_read = true;
+                }
+            }
+        }
+
+        return measure;
+    }
+
     public void invertList() {
 
     }
