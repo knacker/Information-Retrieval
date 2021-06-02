@@ -23,6 +23,12 @@ public class DocumentManager {
 
     DocumentOperator operator;
 
+    private final int task_linear_search_original = 1;
+    private final int task_linear_search_stopWords = 2;
+    private final int task_linear_search_reduction = 3;
+    private final int task_save_docs = 4;
+    private final int task_quit_program = 5;
+
     public DocumentManager() {
         operator = new DocumentOperator();
     }
@@ -40,25 +46,34 @@ public class DocumentManager {
         while (!done) {
             int task = getTask();
 
-            if (task == 1 || task == 2) {
-                String searchWord = getSearchWord();
-                // searchTerm includes for Praktikum 2 only one word, later maybe more
-                List<String> searchTerm = new ArrayList<>();
-                searchTerm.add(searchWord);
-
-                if (task == 1) {
+            switch (task) {
+                case task_linear_search_original -> {
+                    String searchWord = getSearchWord();
+                    List<String> searchTerm = new ArrayList<>();
+                    searchTerm.add(searchWord);
                     response = DocumentOperator.linearSearch(docs, searchTerm);
-                } else {
-                    List<Document> clearedDocs = operator.filterWords(docs, sw);
-                    response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
+                    printSearchResponse(response);
                 }
 
-                printSearchResponse(response);
+                case task_linear_search_stopWords -> {
+                    String searchWord = getSearchWord();
+                    List<String> searchTerm = new ArrayList<>();
+                    searchTerm.add(searchWord);
+                    List<Document> clearedDocs = operator.filterWords(docs, sw);
+                    response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
+                    printSearchResponse(response);
+                }
 
-            } else if (task == 3) {
-                saveDocs();
-            } else if (task == 4) {
-                done = true;
+                case task_linear_search_reduction -> {
+                    String searchWord = getSearchWord();
+                    List<String> searchTerm = new ArrayList<>();
+                    searchTerm.add(searchWord);
+                    printSearchResponse(response);
+                }
+
+                case task_save_docs -> saveDocs();
+
+                case task_quit_program -> done = true;
             }
         }
     }
@@ -95,10 +110,11 @@ public class DocumentManager {
         System.out.println("\n\nInformation Retrieval System");
         System.out.println("==================");
 
-        System.out.println("1. Lineare Suche (Originaldokumente)");
-        System.out.println("2. Lineare Suche (bereinigte Dokumente)");
-        System.out.println("3. Dokumente speichern");
-        System.out.println("4. Programm beenden");
+        System.out.println(task_linear_search_original + ". Lineare Suche (Originaldokumente)");
+        System.out.println(task_linear_search_stopWords + ". Lineare Suche (Stoppwort-freie Dokumente)");
+        System.out.println(task_linear_search_reduction + ". Lineare Suche (auf Stammform reduzierte Dokumente)");
+        System.out.println(task_save_docs + ". Dokumente speichern");
+        System.out.println(task_quit_program + ". Programm beenden");
         System.out.println();
         System.out.print("> ");
 
