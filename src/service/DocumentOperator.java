@@ -43,7 +43,7 @@ public class DocumentOperator {
             content = content.toLowerCase();
 
             for (String filter : filterL.getList()) {
-                content = content.replaceAll(" " + filter + " ", " ");
+                content = content.replaceAll(" " + filter + " ", "");
             }
 
             Document filteredDoc = new Document(i, doc.getName(), content);
