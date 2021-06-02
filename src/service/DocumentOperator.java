@@ -81,8 +81,8 @@ public class DocumentOperator {
         if (searchTerms.size() == 0) {
             return true;
         }
-        if (content.toLowerCase().contains(searchTerms.get(0).toLowerCase())) {
-            if(true & matchString(searchTerms.subList(1, searchTerms.size()), content)) {
+        if (content.toLowerCase().contains(" " + searchTerms.get(0).toLowerCase() + " ")) {
+            if(matchString(searchTerms.subList(1, searchTerms.size()), content)) {
                 return true;
             }
         } else {
