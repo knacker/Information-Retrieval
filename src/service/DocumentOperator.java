@@ -2,7 +2,9 @@ package service;
 
 import data.Document;
 import data.FilterList;
+import data.InvertedListObject;
 import data.Model;
+import util.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,9 @@ public class DocumentOperator {
         return foundDocs;
     }
     private List<Document> invertedSearch(List<Document> docs, List<String> search) {
+
+        List<InvertedListObject> invertedDocuments = invertList(docs);
+
         List<Document> foundDocs = new ArrayList<>();
 
         return foundDocs;
@@ -295,8 +300,18 @@ public class DocumentOperator {
         return measure;
     }
 
-    public void invertList() {
+    public List<InvertedListObject> invertList(List<Document> docs) {
 
+        //list, which contains every word and its list of documents, which it is in
+        List<InvertedListObject> invertDocs= new ArrayList<>();
+
+        //list tuples, which contain the document ids
+        for(Document doc : docs) {
+            List<Integer> docIDs = new ArrayList<>();
+
+        }
+
+        return invertDocs;
     }
 
     public double calculateRecall() {
