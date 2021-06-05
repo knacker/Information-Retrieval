@@ -4,9 +4,9 @@ import data.Document;
 import data.FilterList;
 import data.InvertedListObject;
 import data.Model;
-import util.Tuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DocumentOperator {
@@ -69,7 +69,7 @@ public class DocumentOperator {
     }
     private List<Document> invertedSearch(List<Document> docs, List<String> search) {
 
-        List<InvertedListObject> invertedDocuments = invertList(docs);
+        List<InvertedListObject> invertedDocuments = createInvertList(docs);
 
         List<Document> foundDocs = new ArrayList<>();
 
@@ -300,18 +300,41 @@ public class DocumentOperator {
         return measure;
     }
 
-    public List<InvertedListObject> invertList(List<Document> docs) {
+    public List<InvertedListObject> createInvertList(List<Document> docs) {
 
         //list, which contains every word and its list of documents, which it is in
         List<InvertedListObject> invertDocs= new ArrayList<>();
+        List<String> words = createWordList(docs);
 
-        //list tuples, which contain the document ids
         for(Document doc : docs) {
-            List<Integer> docIDs = new ArrayList<>();
 
         }
 
         return invertDocs;
+    }
+
+    private List<String> createWordList(List<Document> docs) {
+
+        List<String> words = new ArrayList<>();
+
+        for(Document doc : docs) {
+
+            String content = doc.getContent();
+            List<String> wordList = Arrays.asList(content.split(" "));
+
+            for(String word : wordList) {
+                if(word.matches(".*[.,;:\"!?\n]*.")) {
+                    wordList.remove(word);
+                }
+            }
+            for(String word : wordList) {
+                if(!word.contains(word) && !word.equals(" ")) {
+                    words.add(word);
+                }
+            }
+        }
+
+        return words;
     }
 
     public double calculateRecall() {
