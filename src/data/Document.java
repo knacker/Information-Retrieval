@@ -6,6 +6,7 @@ public class Document {
     private String name;
     private String content;
 
+
     public Document(int id, String name, String content) {
         this.id = id;
         this.name = name;
@@ -14,6 +15,14 @@ public class Document {
 
     public boolean isRelevant() {
         return true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName () {

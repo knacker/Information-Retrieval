@@ -4,6 +4,8 @@ import data.Document;
 import data.FilterList;
 import data.InvertedListObject;
 import data.Model;
+import util.ListOccurenceCounter;
+import util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,8 +72,14 @@ public class DocumentOperator {
     private List<Document> invertedSearch(List<Document> docs, List<String> search) {
 
         List<InvertedListObject> invertedDocuments = createInvertList(docs);
-
         List<Document> foundDocs = new ArrayList<>();
+
+        for(InvertedListObject obj : invertedDocuments) {
+            if(search.equals(obj.getWord())) {
+                //add doc where id matches the InvertedListObject ones
+                foundDocs.add(docs.get(obj.getIdCount().getValue1()));
+            }
+        }
 
         return foundDocs;
     }
@@ -304,18 +312,23 @@ public class DocumentOperator {
 
         //list, which contains every word and its list of documents, which it is in
         List<InvertedListObject> invertDocs= new ArrayList<>();
-        List<String> words = createWordList(docs);
+        List<Tuple<String, Integer>> words = createWordList(docs);
 
         for(Document doc : docs) {
-
+            for(int i = 0; i < words.size(); i++) {
+                if(doc.getContent().toLowerCase().matches(words.get(i).getValue1())) {
+                    InvertedListObject obj = new InvertedListObject(words.get(i).getValue1(), new Tuple<>(doc.getId(), words.get(i).getValue2()));
+                    invertDocs.add(obj);
+                }
+            }
         }
 
         return invertDocs;
     }
 
-    private List<String> createWordList(List<Document> docs) {
+    private List<Tuple<String, Integer>> createWordList(List<Document> docs) {
 
-        List<String> words = new ArrayList<>();
+        ArrayList<String> words = new ArrayList<>();
 
         for(Document doc : docs) {
 
@@ -334,8 +347,13 @@ public class DocumentOperator {
             }
         }
 
-        return words;
+        List<Tuple<String, Integer>> wordListCounted = new ArrayList<>();
+
+        ListOccurenceCounter.countFrequencies(words, wordListCounted);
+
+        return wordListCounted;
     }
+
 
     public double calculateRecall() {
         double recall = 0;
