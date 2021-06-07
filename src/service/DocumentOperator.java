@@ -6,6 +6,7 @@ import data.InvertedListObject;
 import data.Model;
 import util.ListOccurenceCounter;
 import util.Tuple;
+import util.WordListUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -312,7 +313,7 @@ public class DocumentOperator {
 
         //list, which contains every word and its list of documents, which it is in
         List<InvertedListObject> invertDocs= new ArrayList<>();
-        List<Tuple<String, Integer>> words = createWordList(docs);
+        List<Tuple<String, Integer>> words = WordListUtil.createWordList(docs);
 
         for(Document doc : docs) {
             for(int i = 0; i < words.size(); i++) {
@@ -325,35 +326,6 @@ public class DocumentOperator {
 
         return invertDocs;
     }
-
-    private List<Tuple<String, Integer>> createWordList(List<Document> docs) {
-
-        ArrayList<String> words = new ArrayList<>();
-
-        for(Document doc : docs) {
-
-            String content = doc.getContent();
-            List<String> wordList = Arrays.asList(content.split(" "));
-
-            for(String word : wordList) {
-                if(word.matches(".*[.,;:\"!?\n]*.")) {
-                    wordList.remove(word);
-                }
-            }
-            for(String word : wordList) {
-                if(!word.contains(word) && !word.equals(" ")) {
-                    words.add(word);
-                }
-            }
-        }
-
-        List<Tuple<String, Integer>> wordListCounted = new ArrayList<>();
-
-        ListOccurenceCounter.countFrequencies(words, wordListCounted);
-
-        return wordListCounted;
-    }
-
 
     public double calculateRecall() {
         double recall = 0;
