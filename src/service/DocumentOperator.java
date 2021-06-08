@@ -124,24 +124,97 @@ public class DocumentOperator {
 
         response = rule("sses", "ss", statement);
 
-        // rule not matched (else longest match for Step 1a found)
+        // SSES -> SS
         if (response.equals("")) {
+            // rule not matched (else longest match for Step 1a found)
             response = rule("ies", "i", statement);
         }
 
+        // IES -> I
         if (response.equals("")) {
             response = rule("ss", "ss", statement);
         }
 
+        // SS -> SS
         if (response.equals("")) {
             response = rule("s", "", statement);
+        }
+
+        // S ->
+        if (response.equals("")) {
+            // no rule matched -> no change
+            response = statement;
+        }
+
+        return response;
+    }
+
+    public static String step1b2(String statement) {
+        String response = "";
+
+        // AT -> ATE
+        response = rule("at", "ate", statement);
+
+        // BL -> BLE
+        if (response.equals("")) {
+            response = rule("bl", "ble", statement);
+        }
+
+        // IZ -> IZE
+        if (response.equals("")) {
+            response = rule("iz", "ize", statement);
+        }
+
+        // TODO:
+        // (*d and not (*L or *S or *Z)) -> single letter
+        // example: hopp -> hop, tann -> tan, fall -> fall
+
+        // (m=1 and *o) -> E
+
+        if (response.equals("")) {
+            response = statement;
         }
 
         return response;
     }
 
     public static String step1b(String statement) {
-        return null;
+        String response = "";
+
+        // (m>0) EED -> EE
+        if (getMeasure(rule("eed","", statement)) > 0) {
+            response = rule("eed", "ee", statement);
+        } else if (leftPartMatched("eed", statement)) {
+            response = statement;
+        }
+
+        // (*v*) ING ->
+        if (response.equals("")) {
+            if (statementContainsVowel(rule("ing", "" , statement))) {
+                response = rule("ing" , "", statement);
+            } else if (leftPartMatched("ing", statement)) {
+                response = statement;
+            }
+        }
+
+        // (*v*) ED ->
+        if (response.equals("")) {
+            if (statementContainsVowel(rule("ed", "", statement))) {
+                response = rule("ed","", statement);
+            }  else if (leftPartMatched("ed", statement)) {
+                response = statement;
+            }
+        }
+
+        if (response.equals("")) {
+            response = statement;
+        }
+
+        return response;
+    }
+
+    private static boolean leftPartMatched(String left, String statement) {
+        return !rule(left, left, statement).equals("");
     }
 
     public static String step1c(String statement) {
@@ -160,37 +233,9 @@ public class DocumentOperator {
     }
 
     /**
-     * @param word in lowercase
+     * @param statement in lowercase
      * @return [C](VC){m}[V] notation
      */
-    public static String convertToConsonantVowelForm(String word) {
-        StringBuilder cv_form = new StringBuilder();
-
-        for (int i = 0; i < word.length(); i++) {
-            if (i == 0) {
-                if (isCharConsonant(word.charAt(i)) || word.charAt(i) == 'y') {
-                    cv_form.append(consonant);
-                } else {
-                    cv_form.append(vowel);
-                }
-            } else {
-                if (isCharConsonant(word.charAt(i)) != isCharConsonant(word.charAt(i-1)) || word.charAt(i) == 'y') {
-                    if (isCharConsonant(word.charAt(i))) {
-                        cv_form.append(consonant);
-                    } else {
-                        if (!isCharConsonant(word.charAt(i-1)) && word.charAt(i) == 'y') {
-                            cv_form.append(consonant);
-                        } else {
-                            cv_form.append(vowel);
-                        }
-                    }
-                }
-            }
-        }
-
-        return cv_form.toString();
-    }
-
     public static String convertToCVForm(String statement) {
         StringBuilder cv_form = new StringBuilder();
 
@@ -251,13 +296,20 @@ public class DocumentOperator {
      * condition *d
      *
      * @param statement
-     * @return true, if statement ends with double consonant
+     * @return      return consonant, if true
+     *              else return ' '
      */
-    public static boolean statementEndsWithDoubleConsonant(String statement) {
-        char second_last = statement.charAt(statement.length() - 2);
-        char last = statement.charAt(statement.length() - 1);
+    public static char statementEndsWithDoubleConsonant(String statement) {
+        if (statement.length() >= 2) {
+            char second_last = statement.charAt(statement.length() - 2);
+            char last = statement.charAt(statement.length() - 1);
 
-        return (second_last == last && isCharConsonant(second_last));
+            if (second_last == last && isCharConsonant(second_last)) {
+                return second_last;
+            }
+        }
+
+        return ' ';
     }
 
     /**
@@ -267,7 +319,7 @@ public class DocumentOperator {
      * @return true, if statement contains a vowel
      */
     public static boolean statementContainsVowel(String statement) {
-        return convertToConsonantVowelForm(statement).contains("" + vowel);
+        return convertToCVForm(statement).contains("" + vowel);
     }
 
     /**
