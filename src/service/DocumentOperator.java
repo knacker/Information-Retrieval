@@ -77,8 +77,11 @@ public class DocumentOperator {
 
         for(InvertedListObject obj : invertedDocuments) {
             if(search.equals(obj.getWord())) {
-                //add doc where id matches the InvertedListObject ones
-                foundDocs.add(docs.get(obj.getIdCount().getValue1()));
+                //add every doc associated with the string
+                for(Tuple<Integer, Integer> idCount : obj.getIdCount()) {
+                    foundDocs.add(docs.get(idCount.getValue1()));
+                }
+
             }
         }
 
@@ -365,13 +368,22 @@ public class DocumentOperator {
 
         //list, which contains every word and its list of documents, which it is in
         List<InvertedListObject> invertDocs= new ArrayList<>();
-        List<Tuple<String, Integer>> words = WordListUtil.createWordList(docs);
-
         for(Document doc : docs) {
-            for(int i = 0; i < words.size(); i++) {
-                if(doc.getContent().toLowerCase().matches(words.get(i).getValue1())) {
-                    InvertedListObject obj = new InvertedListObject(words.get(i).getValue1(), new Tuple<>(doc.getId(), words.get(i).getValue2()));
-                    invertDocs.add(obj);
+
+            //create List of words of a document, which contains the number of occurences for each word
+            List<Tuple<String, Integer>> wordsCounted = WordListUtil.createWordList(doc);
+
+            for(int i = 0; i < invertDocs.size(); i++) {
+                for(int j = 0; j < wordsCounted.size(); i++) {
+                    //if entry of a word already exists, add a new pair( Document id, Number of occurences)
+                    if(invertDocs.get(i).getWord().equals(wordsCounted.get(j).getValue1())) {
+                        invertDocs.get(i).addEntryIC(new Tuple(doc.getId(), wordsCounted.get(j).getValue2()));
+                    } else {
+                        //if no entry exists, create a new list of ids and counts of the word for each document
+                        List<Tuple<Integer, Integer>> tpList = new ArrayList<>();
+                        tpList.add(new Tuple<>(doc.getId(), wordsCounted.get(j).getValue2()));
+                        invertDocs.add(new InvertedListObject(wordsCounted.get(j).getValue1(), tpList));
+                    }
                 }
             }
         }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ListOccurenceCounter {
 
-    public static void countFrequencies(ArrayList<String> list, List<Tuple<String, Integer>> wordListSmall) {
+    public static void countOccurence(ArrayList<String> list, List<Tuple<String, Integer>> wordListSmall) {
         // hashmap to store the frequency of element
         Map<String, Integer> hm = new HashMap<String, Integer>();
 

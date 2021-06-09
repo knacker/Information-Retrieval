@@ -2,36 +2,29 @@ package data;
 
 import util.Tuple;
 
+import java.util.List;
+
 public class InvertedListObject {
 
     private String word;
-    private Tuple<Integer, Integer> idCount;
 
-    public InvertedListObject(String word, Tuple<Integer, Integer> idCount) {
+    private List<Tuple<Integer, Integer>> idCount;
+
+    public InvertedListObject(String word, List<Tuple<Integer, Integer>>idCount) {
         this.word = word;
         this.idCount = idCount;
     }
 
-    public void increaseCount() {
-        int count = idCount.getValue2();
-        count++;
-        this.idCount.setValue2(count);
+    public void addEntryIC(Tuple<Integer, Integer> entry) {
+        idCount.add(entry);
     }
 
     public String getWord() {
         return word;
     }
 
-    public void setWord(String word) {
-        this.word = word;
-    }
-
-    public Tuple<Integer, Integer> getIdCount() {
+    public List<Tuple<Integer, Integer>> getIdCount() {
         return idCount;
-    }
-
-    public void setIdCount(Tuple<Integer, Integer> idCount) {
-        this.idCount = idCount;
     }
 
 }
