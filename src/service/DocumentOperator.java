@@ -4,12 +4,10 @@ import data.Document;
 import data.FilterList;
 import data.InvertedListObject;
 import data.Model;
-import util.ListOccurenceCounter;
 import util.Tuple;
 import util.WordListUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DocumentOperator {
