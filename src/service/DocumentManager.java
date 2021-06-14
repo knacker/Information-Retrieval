@@ -54,23 +54,12 @@ public class DocumentManager {
                    // searchTerm.add(searchWord);
                     String a = "&";
                     String b = "(";
-                    String c = "the";
-                    String f = "!";
-                    String g = "(";
-                    String d = "a";
-                    String h = ")";
+                    String c = "cock";
                     String e = ")";
                     searchTerm.add(a);
                     searchTerm.add(b);
                     searchTerm.add(c);
-                    searchTerm.add(f);
-                    searchTerm.add(g);
 
-
-
-
-                    searchTerm.add(d);
-                    searchTerm.add(h);
                     searchTerm.add(e);
 
                     response = DocumentOperator.linearSearch(docs, searchTerm);
@@ -78,9 +67,18 @@ public class DocumentManager {
                 }
 
                 case task_linear_search_stopWords -> {
-                    String searchWord = getSearchWord();
+                    //String searchWord = getSearchWord();
                     List<String> searchTerm = new ArrayList<>();
-                    searchTerm.add(searchWord);
+                    //searchTerm.add(searchWord);
+                    String a = "&";
+                    String b = "(";
+                    String c = "cock";
+                    String e = ")";
+                    searchTerm.add(a);
+                    searchTerm.add(b);
+                    searchTerm.add(c);
+                    searchTerm.add(e);
+
                     List<Document> clearedDocs = operator.filterWords(docs, sw);
                     response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
                     printSearchResponse(response);

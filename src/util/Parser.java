@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Parser {
@@ -10,6 +11,17 @@ public class Parser {
     List<String> search;
     String docContent;
 
+    /**
+    * @param expression in the form of a boolean operator, following a parantheses ( and after that the contents, closing with a ).
+     *                   This expression will be called a block. A block itself can have other blocks aswell.
+     *                  For Example, the input should look like that : &(word1, word2). Negating expressions works the same:
+     *                  For Example, !(word1, word2). A combined expression, for example, looks like that:
+     *                  &(word1, word2, |(word3, word4, !(|(word2, word3)))), which translates to:
+     *                  word1 AND word2 AND (word3 OR word4 OR NOT(word2 OR word3))
+     *
+    * @return boolean
+    *
+     */
     public boolean evalExpression(List<String> expression, String content) {
 
         i = 0;
@@ -29,11 +41,15 @@ public class Parser {
             if(st.equals("(")) {
                 continue;
             }
-            if(!st.equals("|") && !st.equals("!") && !st.equals("&")) {
-                bools.add(matchString(st, docContent));
+
+            if(!st.equals("|") && !st.equals("!") && !st.equals("&") && !st.equals(")")) {
+                bools.add(matchString(Collections.singletonList(st), docContent));
             } else if(st.equals("|") || st.equals("!") || st.equals("&") ){
+                //calls itself, if there is another block within a block, decrease i by 1, so it starts at the same point for the new block
                 i--;
                 bools.add(parse());
+
+              //end of block
             } else if(st.equals(")")) {
                 break;
             }
@@ -52,11 +68,17 @@ public class Parser {
         return result;
     }
 
-    private static boolean matchString(String term, String content) {
-        if (content.toLowerCase().contains(" " + term.toLowerCase() + " ")) {
+    private static boolean matchString(List<String> searchTerms, String content) {
+        if (searchTerms.size() == 0) {
             return true;
+        }
+        if (content.toLowerCase().contains(" " + searchTerms.get(0).toLowerCase() + " ")) {
+            if(matchString(searchTerms.subList(1, searchTerms.size()), content)) {
+                return true;
+            }
         } else {
             return false;
         }
+        return false;
     }
 }

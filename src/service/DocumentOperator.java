@@ -41,7 +41,7 @@ public class DocumentOperator {
         for (Document doc : docs) {
 
             content = doc.getContent();
-            content = content.replaceAll("[.,;:\"!?\n]", "");
+            content = content.replaceAll("[.,;:\"!?\n]", " ");
             content = content.toLowerCase();
 
             for (String filter : filterL.getList()) {
@@ -123,7 +123,8 @@ public class DocumentOperator {
             List<Tuple<String, Integer>> wordsCounted = WordListUtil.createWordList(doc);
 
             for(int i = 0; i < invertDocs.size(); i++) {
-                for(int j = 0; j < wordsCounted.size(); i++) {
+
+                for(int j = 0; j < wordsCounted.size(); j++) {
                     //if entry of a word already exists, add a new pair( Document id, Number of occurences)
                     if(invertDocs.get(i).getWord().equals(wordsCounted.get(j).getValue1())) {
                         invertDocs.get(i).addEntryIC(new Tuple(doc.getId(), wordsCounted.get(j).getValue2()));

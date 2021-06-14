@@ -10,23 +10,29 @@ public class WordListUtil {
         ArrayList<String> words = new ArrayList<>();
 
 
-            String content = doc.getContent();
-            List<String> wordList = Arrays.asList(content.split(" "));
-            for(String word : wordList) {
-                if(word.matches("[.,;:\"!?\n]")) {
-                    wordList.remove(word);
-                }
+        String content = doc.getContent();
+        List<String> wordList = new ArrayList<>(Arrays.asList(content.split(" ")));
+        ArrayList<String> newList = new ArrayList<>();
+        for (String word : wordList) {
+
+            word = word.replaceAll("[.,;:\"!?\n]", "");
+            if (!word.isBlank()) {
+                newList.add(word);
             }
-            for(String word : wordList) {
-                if(!word.contains(word) && !word.equals(" ")) {
-                    words.add(word);
-                }
+        }
+        /*
+        for (String word : wordList) {
+            if (!wordList.contains(word) && !word.equals(" ")) {
+                words.add(word);
             }
+        }
+
+         */
 
         List<Tuple<String, Integer>> wordListCounted = new ArrayList<>();
 
         //counts the occurence of each word in the list
-       countOccurence(words, wordListCounted);
+        countOccurence(newList, wordListCounted);
 
         return wordListCounted;
     }
