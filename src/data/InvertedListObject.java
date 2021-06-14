@@ -15,6 +15,8 @@ public class InvertedListObject {
         this.idCount = idCount;
     }
 
+    public void increaseCount(int num) {
+    }
     public void addEntryIC(Tuple<Integer, Integer> entry) {
         idCount.add(entry);
     }
