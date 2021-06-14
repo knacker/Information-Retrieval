@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Parser {
 
+    //variable, so the parser knows where it currently is
     int i;
     List<String> search;
     String docContent;
@@ -28,7 +29,7 @@ public class Parser {
             if(st.equals("(")) {
                 continue;
             }
-            if(!st.equals("|") || !st.equals("!") || !st.equals("&") ) {
+            if(!st.equals("|") && !st.equals("!") && !st.equals("&")) {
                 bools.add(matchString(st, docContent));
             } else if(st.equals("|") || st.equals("!") || st.equals("&") ){
                 i--;

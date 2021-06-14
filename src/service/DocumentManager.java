@@ -26,8 +26,9 @@ public class DocumentManager {
     private final int task_linear_search_original = 1;
     private final int task_linear_search_stopWords = 2;
     private final int task_linear_search_reduction = 3;
-    private final int task_save_docs = 4;
-    private final int task_quit_program = 5;
+    private final int task_inverted_Search = 4;
+    private final int task_save_docs = 5;
+    private final int task_quit_program = 6;
 
     public DocumentManager() {
         operator = new DocumentOperator();
@@ -51,15 +52,25 @@ public class DocumentManager {
                    // String searchWord = getSearchWord();
                     List<String> searchTerm = new ArrayList<>();
                    // searchTerm.add(searchWord);
-                    String a = "|";
+                    String a = "&";
                     String b = "(";
-                    String c = "cold";
-                    String d = "hen";
+                    String c = "the";
+                    String f = "!";
+                    String g = "(";
+                    String d = "a";
+                    String h = ")";
                     String e = ")";
                     searchTerm.add(a);
                     searchTerm.add(b);
                     searchTerm.add(c);
+                    searchTerm.add(f);
+                    searchTerm.add(g);
+
+
+
+
                     searchTerm.add(d);
+                    searchTerm.add(h);
                     searchTerm.add(e);
 
                     response = DocumentOperator.linearSearch(docs, searchTerm);
@@ -82,6 +93,12 @@ public class DocumentManager {
                     printSearchResponse(response);
                 }
 
+                case task_inverted_Search ->  {
+                    String searchWord = getSearchWord();
+                    List<String> searchTerm = new ArrayList<>();
+                    searchTerm.add(searchWord);
+                    printSearchResponse(DocumentOperator.invertedSearch(docs, searchTerm));
+                }
                 case task_save_docs -> saveDocs();
 
                 case task_quit_program -> done = true;

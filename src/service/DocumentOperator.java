@@ -68,7 +68,7 @@ public class DocumentOperator {
         }
         return foundDocs;
     }
-    private List<Document> invertedSearch(List<Document> docs, List<String> search) {
+    public static List<Document> invertedSearch(List<Document> docs, List<String> search) {
 
         List<InvertedListObject> invertedDocuments = createInvertList(docs);
         List<Document> foundDocs = new ArrayList<>();
@@ -113,7 +113,7 @@ public class DocumentOperator {
     }
 
 
-    public List<InvertedListObject> createInvertList(List<Document> docs) {
+    public static List<InvertedListObject> createInvertList(List<Document> docs) {
 
         //list, which contains every word and its list of documents, which it is in
         List<InvertedListObject> invertDocs= new ArrayList<>();

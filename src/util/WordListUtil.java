@@ -12,9 +12,8 @@ public class WordListUtil {
 
             String content = doc.getContent();
             List<String> wordList = Arrays.asList(content.split(" "));
-
             for(String word : wordList) {
-                if(word.matches(".*[.,;:\"!?\n]*.")) {
+                if(word.matches("[.,;:\"!?\n]")) {
                     wordList.remove(word);
                 }
             }
