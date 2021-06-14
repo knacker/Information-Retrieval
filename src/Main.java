@@ -7,9 +7,7 @@ public class Main {
         System.out.println("Launching...");
 
         DocumentManager dm = new DocumentManager();
-        // dm.handle();
-
-        Stemmer.testPorter();
+        dm.handle();
 
         System.out.println("\nDone!");
     }

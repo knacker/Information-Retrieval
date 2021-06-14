@@ -48,9 +48,20 @@ public class DocumentManager {
 
             switch (task) {
                 case task_linear_search_original -> {
-                    String searchWord = getSearchWord();
+                   // String searchWord = getSearchWord();
                     List<String> searchTerm = new ArrayList<>();
-                    searchTerm.add(searchWord);
+                   // searchTerm.add(searchWord);
+                    String a = "|";
+                    String b = "(";
+                    String c = "cold";
+                    String d = "hen";
+                    String e = ")";
+                    searchTerm.add(a);
+                    searchTerm.add(b);
+                    searchTerm.add(c);
+                    searchTerm.add(d);
+                    searchTerm.add(e);
+
                     response = DocumentOperator.linearSearch(docs, searchTerm);
                     printSearchResponse(response);
                 }

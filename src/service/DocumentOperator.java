@@ -4,6 +4,7 @@ import data.Document;
 import data.FilterList;
 import data.InvertedListObject;
 import data.Model;
+import util.Parser;
 import util.Stemmer;
 import util.Tuple;
 import util.WordListUtil;
@@ -58,9 +59,10 @@ public class DocumentOperator {
 
     public static List<Document> linearSearch(List<Document> docs, List<String> search) {
         List<Document> foundDocs = new ArrayList<>();
+        Parser pars = new Parser();
 
         for (Document doc : docs) {
-            if (matchString(search, doc.getContent())) {
+            if (pars.evalExpression(search, doc.getContent())) {
                 foundDocs.add(doc);
             }
         }
