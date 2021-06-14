@@ -129,10 +129,8 @@ public class DocumentOperator {
                 tpList.add(new Tuple<>(doc.getId(), wordsCounted.get(i).getValue2()));
                 invertDocs.add(new InvertedListObject(wordsCounted.get(i).getValue1(), tpList));
             }
+            //merge duplicates
 
-        }
-        //merge duplicates
-        for (Document doc : docs) {
             for (int i = 0; i < invertDocs.size(); i++) {
                 for (int j = i + 1; j < invertDocs.size(); j++) {
                     if (invertDocs.get(i).getWord().equals(invertDocs.get(j).getWord())) {
@@ -142,6 +140,7 @@ public class DocumentOperator {
                 }
             }
         }
+
         return invertDocs;
     }
 
