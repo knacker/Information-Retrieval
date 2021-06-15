@@ -5,6 +5,7 @@ import data.InvertedListObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Parser {
 
@@ -14,6 +15,8 @@ public class Parser {
     String docContent;
     List<InvertedListObject> invertedList;
     List<InvertedListObject> docsToCheck;
+
+    int j;
     /**
     * @param expression in the form of a boolean operator, following a parantheses ( and after that the contents, closing with a ).
      *                   This expression will be called a block. A block itself can have other blocks aswell.
@@ -118,4 +121,39 @@ public class Parser {
         }
         return false;
     }
+
+    public  List<Integer> evalInvertedExpression(List<String> expression, List<InvertedListObject> invertedList) {
+        j = 0;
+        return parseAnal(expression, docsToCheck);
+    }
+
+    private List<Integer> parseAnal(List<String> expression, List<InvertedListObject> invertedList) {
+
+        InvertedListObject obj1 = null;
+        InvertedListObject obj2 = null;
+        String op = expression.get(j++);
+
+        List<Integer> relevantDocs = new ArrayList<>();
+
+        while(j < expression.size()) {
+            String st = search.get(j++).toLowerCase();
+
+            if(st.equals("(")) {
+                continue;
+            }
+            if(!st.equals("|") && !st.equals("!") && !st.equals("&") && !st.equals(")")) {
+                for(int k = 0; k < invertedList.size(); k++) {
+                    if(invertedList.get(k).getWord().toLowerCase().equals(st)) {
+                        obj1 = invertedList.get(k);
+                        if(obj2 == null) {
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+  //  private Map<Object, Object> matchID() {
+   // }
 }
