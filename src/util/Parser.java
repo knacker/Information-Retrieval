@@ -13,7 +13,7 @@ public class Parser {
     List<String> search;
     String docContent;
     List<InvertedListObject> invertedList;
-
+    List<InvertedListObject> docsToCheck;
     /**
     * @param expression in the form of a boolean operator, following a parantheses ( and after that the contents, closing with a ).
      *                   This expression will be called a block. A block itself can have other blocks aswell.
@@ -79,7 +79,7 @@ public class Parser {
             }
 
             if(!st.equals("|") && !st.equals("!") && !st.equals("&") && !st.equals(")")) {
-                bools.add(matchID());
+               //TODO docsToCheck.add(invertedList.get(invertedList.indexOf(st)));
             } else if(st.equals("|") || st.equals("!") || st.equals("&") ){
                 //calls itself, if there is another block within a block, decrease i by 1, so it starts at the same point for the new block
                 i--;
@@ -92,10 +92,6 @@ public class Parser {
         }
 
         return eval(bools, op);
-    }
-
-    private Boolean matchID() {
-        return true;
     }
 
     private boolean eval(List<Boolean> bools, String op) {
