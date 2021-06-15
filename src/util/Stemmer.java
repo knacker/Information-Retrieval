@@ -7,7 +7,31 @@ public class Stemmer {
     private static final char consonant = 'C';
     private static final char vowel = 'V';
 
+    public static String reduceContent(String content) {
+        content = content.replaceAll("[.,;:\"!?\n]", " ");
+        content = content.toLowerCase();
+
+        String[] words = content.split(" ");
+        ArrayList<String> converted_words = new ArrayList<>();
+
+        // remove empty Array-Elements and so on
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                converted_words.add(word);
+            }
+        }
+
+        ArrayList<String> reduce_words = new ArrayList<>();
+
+        for (String word : converted_words) {
+            reduce_words.add(applyRules(word));
+        }
+
+        return String.join(" " , reduce_words);
+    }
+
     public static String applyRules(String statement) {
+
         String s1 = step1a(statement);
         String s2 = step1b(s1);
         String s3 = step1c(s2);
@@ -320,56 +344,56 @@ public class Stemmer {
         String response = "";
 
         // (m>1) AL  ->
-        response = onlyMeasureCond("al","",0,statement);
+        response = onlyMeasureCond("al","",1,statement);
 
         // (m>1) ANCE  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ance","",0,statement);
+            response = onlyMeasureCond("ance","",1,statement);
         }
 
         // (m>1) ENCE  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ence","",0,statement);
+            response = onlyMeasureCond("ence","",1,statement);
         }
 
         // (m>1) ER  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("er","",0,statement);
+            response = onlyMeasureCond("er","",1,statement);
         }
 
         // (m>1) IC  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ic","",0,statement);
+            response = onlyMeasureCond("ic","",1,statement);
         }
 
         // (m>1) ABLE  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("able","",0,statement);
+            response = onlyMeasureCond("able","",1,statement);
         }
 
         // (m>1) IBLE  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ible","",0,statement);
+            response = onlyMeasureCond("ible","",1,statement);
         }
 
         // (m>1) ANT  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ant","",0,statement);
+            response = onlyMeasureCond("ant","",1,statement);
         }
 
         // (m>1) EMENT  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ement","",0,statement);
+            response = onlyMeasureCond("ement","",1,statement);
         }
 
         // (m>1) MENT  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ment","",0,statement);
+            response = onlyMeasureCond("ment","",1,statement);
         }
 
         // (m>1) ENT  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ent","",0,statement);
+            response = onlyMeasureCond("ent","",1,statement);
         }
 
         // (m>1 and (*S or *T)) ION ->
@@ -383,37 +407,37 @@ public class Stemmer {
 
         // (m>1) OU  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ou","",0,statement);
+            response = onlyMeasureCond("ou","",1,statement);
         }
 
         // (m>1) ISM  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ism","",0,statement);
+            response = onlyMeasureCond("ism","",1,statement);
         }
 
         // (m>1) ATE  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ate","",0,statement);
+            response = onlyMeasureCond("ate","",1,statement);
         }
 
         // (m>1) ITI  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("iti","",0,statement);
+            response = onlyMeasureCond("iti","",1,statement);
         }
 
         // (m>1) OUS  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ous","",0,statement);
+            response = onlyMeasureCond("ous","",1,statement);
         }
 
         // (m>1) IVE  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ive","",0,statement);
+            response = onlyMeasureCond("ive","",1,statement);
         }
 
         // (m>1) IZE  ->
         if (response.equals("")) {
-            response = onlyMeasureCond("ize","",0,statement);
+            response = onlyMeasureCond("ize","",1,statement);
         }
 
         if (response.equals("")) {
@@ -526,17 +550,19 @@ public class Stemmer {
      *        -WIL, -HOP)
      */
     private static boolean statementEndsWithCVC(String statement) {
-        char third_last = statement.charAt(statement.length() - 3);
-        char second_last = statement.charAt(statement.length() - 2);
-        char last = statement.charAt(statement.length() - 1);
+        if (statement.length() >= 3) {
+            char third_last = statement.charAt(statement.length() - 3);
+            char second_last = statement.charAt(statement.length() - 2);
+            char last = statement.charAt(statement.length() - 1);
 
-        return (
-                isCharConsonant(third_last) &&
-                        !isCharConsonant(second_last) &&
-                        isCharConsonant(last) &&
-                        (last != 'w' && last != 'y' && last != 'x')
-        );
-
+            return (
+                    isCharConsonant(third_last) &&
+                            !isCharConsonant(second_last) &&
+                            isCharConsonant(last) &&
+                            (last != 'w' && last != 'y' && last != 'x')
+            );
+        }
+        return false;
     }
 
     /**
