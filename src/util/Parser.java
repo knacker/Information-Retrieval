@@ -1,5 +1,7 @@
 package util;
 
+import data.InvertedListObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +12,7 @@ public class Parser {
     int i;
     List<String> search;
     String docContent;
+    List<InvertedListObject> invertedList;
 
     /**
     * @param expression in the form of a boolean operator, following a parantheses ( and after that the contents, closing with a ).
@@ -22,16 +25,23 @@ public class Parser {
     * @return boolean
     *
      */
-    public boolean evalExpression(List<String> expression, String content) {
+    public boolean evalExpression(List<String> expression, String content, List<InvertedListObject> list) {
 
         i = 0;
         search = expression;
         docContent = content;
+        invertedList = list;
 
-        return parse();
+        if(invertedList == null) {
+            return parseBool();
+        }
+        if(docContent.isBlank()) {
+            return parseInverted();
+        }
+        return false;
     }
 
-    private boolean parse() {
+    private boolean parseBool() {
         String op = search.get(i++);
         List<Boolean> bools = new ArrayList<>();
 
@@ -47,7 +57,7 @@ public class Parser {
             } else if(st.equals("|") || st.equals("!") || st.equals("&") ){
                 //calls itself, if there is another block within a block, decrease i by 1, so it starts at the same point for the new block
                 i--;
-                bools.add(parse());
+                bools.add(parseBool());
 
               //end of block
             } else if(st.equals(")")) {
@@ -55,6 +65,37 @@ public class Parser {
             }
         }
         return eval(bools, op);
+    }
+    public boolean parseInverted() {
+
+        String op = search.get(i++);
+        List<Boolean> bools = new ArrayList<>();
+
+        while(i < search.size()) {
+            String st = search.get(i++).toLowerCase();
+
+            if(st.equals("(")) {
+                continue;
+            }
+
+            if(!st.equals("|") && !st.equals("!") && !st.equals("&") && !st.equals(")")) {
+                bools.add(matchID());
+            } else if(st.equals("|") || st.equals("!") || st.equals("&") ){
+                //calls itself, if there is another block within a block, decrease i by 1, so it starts at the same point for the new block
+                i--;
+                bools.add(parseInverted());
+
+                //end of block
+            } else if(st.equals(")")) {
+                break;
+            }
+        }
+
+        return eval(bools, op);
+    }
+
+    private Boolean matchID() {
+        return true;
     }
 
     private boolean eval(List<Boolean> bools, String op) {
@@ -68,7 +109,7 @@ public class Parser {
         return result;
     }
 
-    private static boolean matchString(List<String> searchTerms, String content) {
+    private boolean matchString(List<String> searchTerms, String content) {
         if (searchTerms.size() == 0) {
             return true;
         }

@@ -62,7 +62,7 @@ public class DocumentOperator {
         Parser pars = new Parser();
 
         for (Document doc : docs) {
-            if (pars.evalExpression(search, doc.getContent())) {
+            if (pars.evalExpression(search, doc.getContent(), null)) {
                 foundDocs.add(doc);
             }
         }
@@ -74,8 +74,10 @@ public class DocumentOperator {
         List<InvertedListObject> invertedDocuments = createInvertList(docs);
         List<Document> foundDocs = new ArrayList<>();
 
+        Parser pars = new Parser();
+
         for (InvertedListObject obj : invertedDocuments) {
-            if (search.equals(obj.getWord())) {
+            if (pars.evalExpression(search, "", obj)) {
                 //add every doc associated with the string
                 for (Tuple<Integer, Integer> idCount : obj.getIdCount()) {
                     foundDocs.add(docs.get(idCount.getValue1()));
@@ -93,20 +95,6 @@ public class DocumentOperator {
 
     public void hash() {
 
-    }
-
-    private static boolean matchString(List<String> searchTerms, String content) {
-        if (searchTerms.size() == 0) {
-            return true;
-        }
-        if (content.toLowerCase().contains(" " + searchTerms.get(0).toLowerCase() + " ")) {
-            if (matchString(searchTerms.subList(1, searchTerms.size()), content)) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-        return false;
     }
 
     public static String removeSuffix(String statement) {

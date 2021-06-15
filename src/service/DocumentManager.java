@@ -54,12 +54,13 @@ public class DocumentManager {
                    // searchTerm.add(searchWord);
                     String a = "&";
                     String b = "(";
-                    String c = "cock";
+                    String c = "he";
+                    String d = "runs";
                     String e = ")";
                     searchTerm.add(a);
                     searchTerm.add(b);
                     searchTerm.add(c);
-
+                    searchTerm.add(d);
                     searchTerm.add(e);
 
                     response = DocumentOperator.linearSearch(docs, searchTerm);
@@ -72,11 +73,13 @@ public class DocumentManager {
                     //searchTerm.add(searchWord);
                     String a = "&";
                     String b = "(";
-                    String c = "cock";
+                    String c = "he";
+                    String d = "runs";
                     String e = ")";
                     searchTerm.add(a);
                     searchTerm.add(b);
                     searchTerm.add(c);
+                    searchTerm.add(d);
                     searchTerm.add(e);
 
                     List<Document> clearedDocs = operator.filterWords(docs, sw);
@@ -92,9 +95,18 @@ public class DocumentManager {
                 }
 
                 case task_inverted_Search ->  {
-                    String searchWord = getSearchWord();
                     List<String> searchTerm = new ArrayList<>();
-                    searchTerm.add(searchWord);
+                    String a = "&";
+                    String b = "(";
+                    String c = "he";
+                    String d = "runs";
+                    String e = ")";
+                    searchTerm.add(a);
+                    searchTerm.add(b);
+                    searchTerm.add(c);
+                    searchTerm.add(d);
+                    searchTerm.add(e);
+
                     printSearchResponse(DocumentOperator.invertedSearch(docs, searchTerm));
                 }
                 case task_save_docs -> saveDocs();

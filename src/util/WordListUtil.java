@@ -7,9 +7,6 @@ import java.util.*;
 public class WordListUtil {
     public static List<Tuple<String, Integer>> createWordList(Document doc) {
 
-        ArrayList<String> words = new ArrayList<>();
-
-
         String content = doc.getContent();
         List<String> wordList = new ArrayList<>(Arrays.asList(content.split(" ")));
         ArrayList<String> newList = new ArrayList<>();
@@ -20,14 +17,6 @@ public class WordListUtil {
                 newList.add(word);
             }
         }
-        /*
-        for (String word : wordList) {
-            if (!wordList.contains(word) && !word.equals(" ")) {
-                words.add(word);
-            }
-        }
-
-         */
 
         List<Tuple<String, Integer>> wordListCounted = new ArrayList<>();
 
