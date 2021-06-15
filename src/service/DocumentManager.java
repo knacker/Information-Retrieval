@@ -50,39 +50,14 @@ public class DocumentManager {
 
             switch (task) {
                 case task_linear_search_original -> {
-                   // String searchWord = getSearchWord();
-                    List<String> searchTerm = new ArrayList<>();
-                   // searchTerm.add(searchWord);
-                    String a = "&";
-                    String b = "(";
-                    String c = "he";
-                    String d = "runs";
-                    String e = ")";
-                    searchTerm.add(a);
-                    searchTerm.add(b);
-                    searchTerm.add(c);
-                    searchTerm.add(d);
-                    searchTerm.add(e);
-
+                    List<String> searchTerm = getSearchTerm();
+                    System.out.println(searchTerm);
                     response = DocumentOperator.linearSearch(docs, searchTerm);
                     printSearchResponse(response, recall, precision);
                 }
 
                 case task_linear_search_stopWords -> {
-                    //String searchWord = getSearchWord();
-                    List<String> searchTerm = new ArrayList<>();
-                    //searchTerm.add(searchWord);
-                    String a = "&";
-                    String b = "(";
-                    String c = "he";
-                    String d = "runs";
-                    String e = ")";
-                    searchTerm.add(a);
-                    searchTerm.add(b);
-                    searchTerm.add(c);
-                    searchTerm.add(d);
-                    searchTerm.add(e);
-
+                    List<String> searchTerm = getSearchTerm();
                     List<Document> clearedDocs = operator.filterWords(docs, sw);
                     response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
                     printSearchResponse(response, recall, precision);
@@ -92,16 +67,14 @@ public class DocumentManager {
                     List<String> searchTerm = getSearchTerm();
                     List<Document> reducedDocs = DocumentOperator.stemming(docs);
                     response = DocumentOperator.linearSearch(reducedDocs, searchTerm);
-                    recall = DocumentOperator.calculateRecall("beast", response);
-                    precision = DocumentOperator.calculatePrecision("beast", response);
+                    recall = DocumentOperator.calculateRecall(searchTerm, response);
+                    precision = DocumentOperator.calculatePrecision(searchTerm, response);
                     printSearchResponse(response, recall, precision);
                 }
 
                 case task_inverted_Search ->  {
-                    List<String> searchTerm = new ArrayList<>();
-
+                    List<String> searchTerm = getSearchTerm();
                     printSearchResponse(DocumentOperator.invertedSearch(docs, searchTerm), recall, precision);
-
                 }
 
                 case task_save_docs -> saveDocs();
@@ -121,7 +94,7 @@ public class DocumentManager {
             System.out.println(doc.getName() + " " + doc.getId());
         }
 
-        System.out.println("Recall : " + recall);
+        System.out.println("\nRecall : " + recall);
         System.out.println("Precision : " + precision);
     }
 
@@ -138,6 +111,7 @@ public class DocumentManager {
 
     /**
      * new input: instead of &(fish) use: & ( fish )
+     *
      * @return
      */
     private List<String> getSearchTerm() {
