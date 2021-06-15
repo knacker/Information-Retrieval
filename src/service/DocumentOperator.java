@@ -9,6 +9,9 @@ import util.Stemmer;
 import util.Tuple;
 import util.WordListUtil;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +90,22 @@ public class DocumentOperator {
         return foundDocs;
     }
 
+    public static List<Document> stemming(List<Document> docs) {
+        List<Document> reduceDocs = new ArrayList<>();
+
+        for (Document doc : docs) {
+            String content = doc.getContent();
+
+            content = Stemmer.reduceContent(content);
+
+            Document new_doc = new Document(doc.getId(), doc.getName(), content);
+
+            reduceDocs.add(new_doc);
+        }
+
+        return reduceDocs;
+    }
+
     public void compareSignature() {
 
     }
@@ -108,11 +127,6 @@ public class DocumentOperator {
         }
         return false;
     }
-
-    public static String removeSuffix(String statement) {
-        return Stemmer.applyRules(statement);
-    }
-
 
     public static List<InvertedListObject> createInvertList(List<Document> docs) {
 
@@ -144,15 +158,139 @@ public class DocumentOperator {
         return invertDocs;
     }
 
-    public double calculateRecall() {
+    public static double calculateRecall(String statement, List<Document> response) {
+        int relevante_Dokumente_im_Ergebnis = getNumberOfRelevantDocs(statement, response);
+        int gesamte_relevante_Dokumente = getAllRelevantDocs(statement);
+
         double recall = 0;
+
+        try {
+            recall = (double) relevante_Dokumente_im_Ergebnis / gesamte_relevante_Dokumente;
+        } catch (Exception e) {
+
+        }
 
         return recall;
     }
 
-    public double calculatePrecision() {
+    public static double calculatePrecision(String statement, List<Document> response) {
+        int relevante_Dokumente_im_Ergebnis = getNumberOfRelevantDocs(statement, response);
+        int gesamte_Dokumente_im_Ergebnis = response.size();
+
         double precision = 0;
 
+        try {
+            precision = (double) relevante_Dokumente_im_Ergebnis / gesamte_Dokumente_im_Ergebnis;
+        } catch (Exception e) {
+
+        }
+
         return precision;
+    }
+
+    public static int getNumberOfRelevantDocs(String statement, List<Document> response) {
+        int count = 0;
+
+        String fileName;
+
+        ArrayList<Integer> found_ids = new ArrayList<>();
+
+        for (Document doc : response) {
+            found_ids.add(doc.getId());
+        }
+
+        if (DocumentManager.isWindows()) {
+            fileName = ".\\res\\ground_truth_updated.txt";
+        } else {
+            fileName = "./res/ground_truth_updated.txt";
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line = br.readLine().replace(",","");
+
+            while (!line.equals("")) {
+
+                if (getWord(line).equals(statement)) {
+                     return compareDocLists(getDocs(line), found_ids);
+                }
+
+                line = br.readLine().replace(",","");
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    private static int getAllRelevantDocs(String statement) {
+        String fileName;
+
+        if (DocumentManager.isWindows()) {
+            fileName = ".\\res\\ground_truth_updated.txt";
+        } else {
+            fileName = "./res/ground_truth_updated.txt";
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line = br.readLine().replace(",","");
+
+            while (!line.equals("")) {
+
+                if (getWord(line).equals(statement)) {
+                    return getDocs(line).length;
+                }
+
+                line = br.readLine().replace(",","");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    private static int compareDocLists(String[] relevant, List<Integer> response) {
+        int count = 0;
+
+        for (String id : relevant) {
+            int relevant_id = Integer.parseInt(id);
+
+            if (response.contains(relevant_id - 1)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static String getWord(String line) {
+        StringBuilder word = new StringBuilder();
+        int i = 0;
+
+        while (line.charAt(i) != ' ') {
+            word.append(line.charAt(i));
+            i++;
+        }
+
+        return word.toString();
+    }
+
+    private static String[] getDocs(String line) {
+        int i = 0;
+        String[] doc_list;
+
+        while (line.charAt(i) != '-') {
+            i++;
+        }
+
+        i += 2;
+
+        doc_list = line.substring(i).split(" ");
+
+        return doc_list;
     }
 }

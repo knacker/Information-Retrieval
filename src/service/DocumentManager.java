@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -43,6 +44,8 @@ public class DocumentManager {
         createDocuments();
 
         List<Document> response = new ArrayList<>();
+        double recall = 0;
+        double precision = 0;
 
         while (!done) {
             int task = getTask();
@@ -63,7 +66,7 @@ public class DocumentManager {
                     searchTerm.add(e);
 
                     response = DocumentOperator.linearSearch(docs, searchTerm);
-                    printSearchResponse(response);
+                    printSearchResponse(response, recall, precision);
                 }
 
                 case task_linear_search_stopWords -> {
@@ -81,22 +84,25 @@ public class DocumentManager {
 
                     List<Document> clearedDocs = operator.filterWords(docs, sw);
                     response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
-                    printSearchResponse(response);
+                    printSearchResponse(response, recall, precision);
                 }
 
                 case task_linear_search_reduction -> {
-                    String searchWord = getSearchWord();
-                    List<String> searchTerm = new ArrayList<>();
-                    searchTerm.add(searchWord);
-                    printSearchResponse(response);
+                    List<String> searchTerm = getSearchTerm();
+                    List<Document> reducedDocs = DocumentOperator.stemming(docs);
+                    response = DocumentOperator.linearSearch(reducedDocs, searchTerm);
+                    recall = DocumentOperator.calculateRecall("beast", response);
+                    precision = DocumentOperator.calculatePrecision("beast", response);
+                    printSearchResponse(response, recall, precision);
                 }
 
                 case task_inverted_Search ->  {
                     String searchWord = getSearchWord();
                     List<String> searchTerm = new ArrayList<>();
                     searchTerm.add(searchWord);
-                    printSearchResponse(DocumentOperator.invertedSearch(docs, searchTerm));
+                    printSearchResponse(DocumentOperator.invertedSearch(docs, searchTerm), recall, precision);
                 }
+
                 case task_save_docs -> saveDocs();
 
                 case task_quit_program -> done = true;
@@ -108,11 +114,14 @@ public class DocumentManager {
      * print each document from response list
      * @param response relevant documents
      */
-    private void printSearchResponse(List<Document> response) {
+    private void printSearchResponse(List<Document> response, double recall, double precision) {
         System.out.println("Deine Suche hat folgende relevante Dokumente geliefert : ");
         for (Document doc: response) {
-            System.out.println(doc.getName());
+            System.out.println(doc.getName() + " " + doc.getId());
         }
+
+        System.out.println("Recall : " + recall);
+        System.out.println("Precision : " + precision);
     }
 
     /**
@@ -124,6 +133,20 @@ public class DocumentManager {
         System.out.print("Gebe ein Suchwort ein : ");
 
         return scanner.nextLine();
+    }
+
+    /**
+     * new input: instead of &(fish) use: & ( fish )
+     * @return
+     */
+    private List<String> getSearchTerm() {
+        Scanner scanner = new Scanner(new InputStreamReader(System.in));
+
+        System.out.print("Gebe einen Suchterm ein : ");
+
+        String[] input = scanner.nextLine().split(" ");
+
+        return new ArrayList<>(Arrays.asList(input));
     }
 
     /**
@@ -139,6 +162,7 @@ public class DocumentManager {
         System.out.println(task_linear_search_original + ". Lineare Suche (Originaldokumente)");
         System.out.println(task_linear_search_stopWords + ". Lineare Suche (Stoppwort-freie Dokumente)");
         System.out.println(task_linear_search_reduction + ". Lineare Suche (auf Stammform reduzierte Dokumente)");
+        System.out.println(task_inverted_Search + ". Suche auf Basis einer invertierten Liste");
         System.out.println(task_save_docs + ". Dokumente speichern");
         System.out.println(task_quit_program + ". Programm beenden");
         System.out.println();
