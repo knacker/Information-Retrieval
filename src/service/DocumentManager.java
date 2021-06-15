@@ -53,6 +53,8 @@ public class DocumentManager {
                     List<String> searchTerm = getSearchTerm();
                     System.out.println(searchTerm);
                     response = DocumentOperator.linearSearch(docs, searchTerm);
+                    recall = DocumentOperator.calculateRecall(searchTerm, response);
+                    precision = DocumentOperator.calculatePrecision(searchTerm, response);
                     printSearchResponse(response, recall, precision);
                 }
 
@@ -60,6 +62,8 @@ public class DocumentManager {
                     List<String> searchTerm = getSearchTerm();
                     List<Document> clearedDocs = operator.filterWords(docs, sw);
                     response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
+                    recall = DocumentOperator.calculateRecall(searchTerm, response);
+                    precision = DocumentOperator.calculatePrecision(searchTerm, response);
                     printSearchResponse(response, recall, precision);
                 }
 
@@ -74,7 +78,10 @@ public class DocumentManager {
 
                 case task_inverted_Search ->  {
                     List<String> searchTerm = getSearchTerm();
-                    printSearchResponse(DocumentOperator.invertedSearch(docs, searchTerm), recall, precision);
+                    response = DocumentOperator.invertedSearch(docs, searchTerm);
+                    recall = DocumentOperator.calculateRecall(searchTerm, response);
+                    precision = DocumentOperator.calculatePrecision(searchTerm, response);
+                    printSearchResponse(response, recall, precision);
                 }
 
                 case task_save_docs -> saveDocs();
@@ -120,6 +127,12 @@ public class DocumentManager {
         System.out.print("Gebe einen Suchterm ein : ");
 
         String[] input = scanner.nextLine().split(" ");
+
+        // if only 1 word input change it to our notation
+        if (input.length == 1) {
+            String word = input[0];
+            input = new String[]{"&", "(" , word , ")"};
+        }
 
         return new ArrayList<>(Arrays.asList(input));
     }

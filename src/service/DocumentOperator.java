@@ -232,6 +232,8 @@ public class DocumentOperator {
     private static int compareDocLists(List<String> relevant, List<Integer> response) {
         int count = 0;
 
+        if (relevant == null) return 0;
+
         for (String id : relevant) {
             int relevant_id = Integer.parseInt(id);
 

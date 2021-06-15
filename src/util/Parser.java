@@ -54,7 +54,10 @@ public class Parser {
                     int j = i+2;
 
                     while (!expression.get(j).equals(")")) {
-                        or_list.add(words_relevant_ids.get(words.indexOf(expression.get(j))));
+                        int insertIndex = words.indexOf(expression.get(j));
+                        if (insertIndex >= 0) {
+                            or_list.add(words_relevant_ids.get(insertIndex));
+                        }
                         j++;
                     }
 
@@ -66,7 +69,10 @@ public class Parser {
                     int j1 = i+2;
 
                     while (!expression.get(j1).equals(")")) {
-                        and_list.add(words_relevant_ids.get(words.indexOf(expression.get(j1))));
+                        int insertIndex = words.indexOf(expression.get(j1));
+                        if (insertIndex >= 0) {
+                            and_list.add(words_relevant_ids.get(insertIndex));
+                        }
                         j1++;
                     }
 
@@ -84,6 +90,8 @@ public class Parser {
 
     private List<String> AND_lists(List<List<String>> and_list) {
         List<String> and = new ArrayList<>();
+
+        if (and_list.isEmpty()) return new ArrayList<>();
 
         for (int i = 0; i < and_list.get(0).size(); i++) {
             boolean b = true;
@@ -105,6 +113,8 @@ public class Parser {
     }
 
     private List<String> OR_lists(List<List<String>> or_list) {
+
+        if (or_list.isEmpty()) return new ArrayList<>();
 
         int i = 0;
         List<String> or = new ArrayList<>(or_list.get(i));
