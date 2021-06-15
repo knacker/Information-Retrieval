@@ -38,10 +38,91 @@ public class Parser {
         if(invertedList == null) {
             return parseBool();
         }
+
         if(docContent.isBlank()) {
             return parseInverted();
         }
         return false;
+    }
+
+    public List<String> getRelevantIDs(List<String> expression, List<String> words, List<List<String>> words_relevant_ids) {
+        List<String> relevant_ids = new ArrayList<>();
+
+        for (int i = 0; i < expression.size(); i++) {
+            String symbol = expression.get(i);
+
+            switch (symbol) {
+                case "|":
+                    List<List<String>> or_list = new ArrayList<>();
+                    int j = i+2;
+
+                    while (!expression.get(j).equals(")")) {
+                        or_list.add(words_relevant_ids.get(words.indexOf(expression.get(j))));
+                        j++;
+                    }
+
+                    relevant_ids = OR_lists(or_list);
+                    break;
+
+                case "&":
+                    List<List<String>> and_list = new ArrayList<>();
+                    int j1 = i+2;
+
+                    while (!expression.get(j1).equals(")")) {
+                        and_list.add(words_relevant_ids.get(words.indexOf(expression.get(j1))));
+                        j1++;
+                    }
+
+                    relevant_ids = AND_lists(and_list);
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return relevant_ids;
+    }
+
+    private List<String> AND_lists(List<List<String>> and_list) {
+        List<String> and = new ArrayList<>();
+
+        for (int i = 0; i < and_list.get(0).size(); i++) {
+            boolean b = true;
+            String s = and_list.get(0).get(i);
+
+            for (int j = 1; j < and_list.size(); j++) {
+                if (!and_list.get(j).contains(s)) {
+                    b = false;
+                    break;
+                }
+            }
+
+            if (b) {
+                and.add(s);
+            }
+        }
+
+        return and;
+    }
+
+    private List<String> OR_lists(List<List<String>> or_list) {
+
+        int i = 0;
+        List<String> or = new ArrayList<>(or_list.get(i));
+
+        i++;
+        while (i < or_list.size()) {
+            for (String s : or_list.get(i)) {
+                if (!or.contains(s)) {
+                    or.add(s);
+                }
+            }
+            i++;
+        }
+
+        return or;
     }
 
     private boolean parseBool() {
@@ -103,7 +184,7 @@ public class Parser {
         }
         boolean result = (op.equals("|")) ? false : true;
         for(boolean bool : bools) {
-            result = (op == "|") ? (result || bool) : (result && bool);
+            result = (op.equals("|")) ? (result || bool) : (result && bool);
         }
         return result;
     }
