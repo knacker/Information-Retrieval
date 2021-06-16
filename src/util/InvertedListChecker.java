@@ -40,9 +40,9 @@ public class InvertedListChecker {
         }
 
         if (op.equals("&")) {
-            if(docsToCheck.size() == 1 ) {
+            if (docsToCheck.size() == 1) {
                 InvertedListObject obj = docsToCheck.get(0);
-                for(Tuple<Integer, Integer> ic : obj.getIdCount()) {
+                for (Tuple<Integer, Integer> ic : obj.getIdCount()) {
                     docIDs.add(ic.getValue1());
                 }
             }

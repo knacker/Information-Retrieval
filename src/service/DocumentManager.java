@@ -2,6 +2,9 @@ package service;
 
 import data.Document;
 import data.FilterList;
+import data.InvertedListObject;
+import util.Tuple;
+import util.WordListUtil;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -19,7 +22,7 @@ public class DocumentManager {
 
     //initialize doclist
     private List<Document> docs = new ArrayList<>();
-
+    private List<InvertedListObject> invertedDocuments = new ArrayList<>();
     DocumentOperator operator;
 
     private final int task_linear_search_original = 1;
@@ -40,6 +43,7 @@ public class DocumentManager {
         boolean done = false;
 
         createDocuments();
+        createInvertList();
 
         List<Document> response = new ArrayList<>();
         double recall = 0;
@@ -78,7 +82,7 @@ public class DocumentManager {
 
                 case task_inverted_Search ->  {
                     List<String> searchTerm = getSearchTerm();
-                    response = DocumentOperator.invertedSearch(docs, searchTerm);
+                    response = DocumentOperator.invertedSearch(docs, invertedDocuments, searchTerm);
                     recall = DocumentOperator.calculateRecall(searchTerm, response);
                     precision = DocumentOperator.calculatePrecision(searchTerm, response);
                     printSearchResponse(response, recall, precision);
@@ -229,6 +233,34 @@ public class DocumentManager {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void createInvertList() {
+
+        //list, which contains every word and its list of documents, which it is in
+
+        for (Document doc : docs) {
+
+            //create List of words of a document, which contains the number of occurences for each word
+            List<Tuple<String, Integer>> wordsCounted = WordListUtil.createWordList(doc);
+
+            for (int i = 0; i < wordsCounted.size(); i++) {
+                List<Tuple<Integer, Integer>> tpList = new ArrayList<>();
+                tpList.add(new Tuple<>(doc.getId(), wordsCounted.get(i).getValue2()));
+                invertedDocuments.add(new InvertedListObject(wordsCounted.get(i).getValue1(), tpList));
+            }
+            //merge duplicates
+
+            for (int i = 0; i < invertedDocuments.size(); i++) {
+                for (int j = i + 1; j < invertedDocuments.size(); j++) {
+                    if (invertedDocuments.get(i).getWord().equals(invertedDocuments.get(j).getWord())) {
+                        invertedDocuments.get(i).addEntryIC(new Tuple(doc.getId(), invertedDocuments.get(j).getIdCount().get(0).getValue2()));
+                        invertedDocuments.remove(j);
+                    }
+                }
+            }
         }
     }
 

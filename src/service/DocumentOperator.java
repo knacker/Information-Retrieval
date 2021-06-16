@@ -24,9 +24,6 @@ public class DocumentOperator {
         if (m == Model.BOOL) {
             foundDocs = linearSearch(docs, search);
         }
-        if (m == Model.INVERTED) {
-            foundDocs = invertedSearch(docs, search);
-        }
         return foundDocs;
     }
 
@@ -71,9 +68,8 @@ public class DocumentOperator {
         return foundDocs;
     }
 
-    public static List<Document> invertedSearch(List<Document> docs, List<String> search) {
+    public static List<Document> invertedSearch(List<Document> docs, List<InvertedListObject> invertedDocuments, List<String> search) {
 
-        List<InvertedListObject> invertedDocuments = createInvertList(docs);
         List<Document> foundDocs = new ArrayList<>();
 
         List<InvertedListObject> docsToCheck = InvertedListChecker.checkDocs(search, invertedDocuments);
@@ -109,36 +105,6 @@ public class DocumentOperator {
 
     public void hash() {
 
-    }
-
-    public static List<InvertedListObject> createInvertList(List<Document> docs) {
-
-        //list, which contains every word and its list of documents, which it is in
-        List<InvertedListObject> invertDocs = new ArrayList<>();
-
-        for (Document doc : docs) {
-
-            //create List of words of a document, which contains the number of occurences for each word
-            List<Tuple<String, Integer>> wordsCounted = WordListUtil.createWordList(doc);
-
-            for (int i = 0; i < wordsCounted.size(); i++) {
-                List<Tuple<Integer, Integer>> tpList = new ArrayList<>();
-                tpList.add(new Tuple<>(doc.getId(), wordsCounted.get(i).getValue2()));
-                invertDocs.add(new InvertedListObject(wordsCounted.get(i).getValue1(), tpList));
-            }
-            //merge duplicates
-
-            for (int i = 0; i < invertDocs.size(); i++) {
-                for (int j = i + 1; j < invertDocs.size(); j++) {
-                    if (invertDocs.get(i).getWord().equals(invertDocs.get(j).getWord())) {
-                        invertDocs.get(i).addEntryIC(new Tuple(doc.getId(), invertDocs.get(j).getIdCount().get(0).getValue2()));
-                        invertDocs.remove(j);
-                    }
-                }
-            }
-        }
-
-        return invertDocs;
     }
 
     public static double calculateRecall(List<String> statement, List<Document> response) {
