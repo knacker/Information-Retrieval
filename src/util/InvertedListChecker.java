@@ -56,7 +56,19 @@ public class InvertedListChecker {
                 }
             }
             if (op.equals("!")) {
-
+                //fill list with numbers
+                for(int k = 0; k < 82; k++) {
+                    docIDs.add(k);
+                }
+                //remove numbers from list if found in any
+                for(InvertedListObject obj : docsToCheck) {
+                    for(Tuple<Integer, Integer> ic : obj.getIdCount()) {
+                        int id = ic.getValue1();
+                        if(docIDs.contains(id)) {
+                            docIDs.remove(id);
+                        }
+                    }
+                }
             }
 
 
