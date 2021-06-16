@@ -14,7 +14,7 @@ public class WordListUtil {
 
             word = word.replaceAll("[.,;:\"!?\n]", "");
             if (!word.isBlank()) {
-                newList.add(word);
+                newList.add(word.toLowerCase());
             }
         }
 
