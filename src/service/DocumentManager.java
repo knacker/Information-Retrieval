@@ -10,6 +10,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +46,10 @@ public class DocumentManager {
         createDocuments();
         createInvertList();
 
+        long timeStart = 0;
+        long timeEnd = 0;
+        long timeDiff = 0;
+
         List<Document> response = new ArrayList<>();
         double recall = 0;
         double precision = 0;
@@ -55,37 +60,48 @@ public class DocumentManager {
             switch (task) {
                 case task_linear_search_original -> {
                     List<String> searchTerm = getSearchTerm();
-                    System.out.println(searchTerm);
+                    timeStart = System.nanoTime();
                     response = DocumentOperator.linearSearch(docs, searchTerm);
+                    timeEnd = System.nanoTime();
+                    timeDiff = timeEnd - timeStart;
                     recall = DocumentOperator.calculateRecall(searchTerm, response);
                     precision = DocumentOperator.calculatePrecision(searchTerm, response);
-                    printSearchResponse(response, recall, precision);
+                    printSearchResponse(response, recall, precision, timeDiff);
                 }
 
                 case task_linear_search_stopWords -> {
                     List<String> searchTerm = getSearchTerm();
+                    timeStart = System.nanoTime();
                     List<Document> clearedDocs = operator.filterWords(docs, sw);
                     response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
+                    timeEnd = System.nanoTime();
+                    timeDiff = timeEnd - timeStart;
                     recall = DocumentOperator.calculateRecall(searchTerm, response);
                     precision = DocumentOperator.calculatePrecision(searchTerm, response);
-                    printSearchResponse(response, recall, precision);
+                    printSearchResponse(response, recall, precision, timeDiff);
                 }
 
                 case task_linear_search_reduction -> {
                     List<String> searchTerm = getSearchTerm();
+                    timeStart = System.nanoTime();
                     List<Document> reducedDocs = DocumentOperator.stemming(docs);
                     response = DocumentOperator.linearSearch(reducedDocs, searchTerm);
+                    timeEnd = System.nanoTime();
+                    timeDiff = timeEnd - timeStart;
                     recall = DocumentOperator.calculateRecall(searchTerm, response);
                     precision = DocumentOperator.calculatePrecision(searchTerm, response);
-                    printSearchResponse(response, recall, precision);
+                    printSearchResponse(response, recall, precision, timeDiff);
                 }
 
                 case task_inverted_Search ->  {
                     List<String> searchTerm = getSearchTerm();
+                    timeStart = System.nanoTime();
                     response = DocumentOperator.invertedSearch(docs, invertedDocuments, searchTerm);
+                    timeEnd = System.nanoTime();
+                    timeDiff = timeEnd - timeStart;
                     recall = DocumentOperator.calculateRecall(searchTerm, response);
                     precision = DocumentOperator.calculatePrecision(searchTerm, response);
-                    printSearchResponse(response, recall, precision);
+                    printSearchResponse(response, recall, precision, timeDiff);
                 }
 
                 case task_save_docs -> saveDocs();
@@ -99,14 +115,29 @@ public class DocumentManager {
      * print each document from response list
      * @param response relevant documents
      */
-    private void printSearchResponse(List<Document> response, double recall, double precision) {
-        System.out.println("Deine Suche hat folgende relevante Dokumente geliefert : ");
-        for (Document doc: response) {
-            System.out.println(doc.getName() + " " + doc.getId());
+    private void printSearchResponse(List<Document> response, double recall, double precision, long nanos) {
+        if (response.isEmpty()) {
+            System.out.println("\nDeine Suche hat keine relevanten Dokumente geliefert.");
+        } else {
+            System.out.println("\nDeine Suche hat folgende relevante Dokumente geliefert : ");
+
+            for (Document doc: response) {
+                System.out.println("\t" + doc.getName());
+            }
+
+            if (recall != 0 || precision != 0) {
+                System.out.println("\nRecall : " + recall);
+                System.out.println("Precision : " + precision);
+            }
+
+            double millis =  (double) nanos / 1000 / 1000;
+
+            DecimalFormat formatter = new DecimalFormat("#.###");
+
+            System.out.println("\nDas finden von " + response.size() + " Dokumenten hat " + formatter.format(millis) + " ms gedauert.");
+
         }
 
-        System.out.println("\nRecall : " + recall);
-        System.out.println("Precision : " + precision);
     }
 
     /**
