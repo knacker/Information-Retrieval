@@ -4,10 +4,7 @@ import data.Document;
 import data.FilterList;
 import data.InvertedListObject;
 import data.Model;
-import util.Parser;
-import util.Stemmer;
-import util.Tuple;
-import util.WordListUtil;
+import util.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -79,17 +76,13 @@ public class DocumentOperator {
         List<InvertedListObject> invertedDocuments = createInvertList(docs);
         List<Document> foundDocs = new ArrayList<>();
 
-        Parser pars = new Parser();
+        List<InvertedListObject> docsToCheck = InvertedListChecker.checkDocs(search, invertedDocuments);
+        List<Integer> matchedDocs = InvertedListChecker.matchIDs(search, docsToCheck);
 
-        for (InvertedListObject obj : invertedDocuments) {
-            if (pars.evalExpression(search, "", invertedDocuments)) {
-                //add every doc associated with the string
-                for (Tuple<Integer, Integer> idCount : obj.getIdCount()) {
-                    foundDocs.add(docs.get(idCount.getValue1()));
-                }
-
-            }
+        for (Integer i : matchedDocs) {
+            foundDocs.add(docs.get(i));
         }
+
 
         return foundDocs;
     }

@@ -15,7 +15,14 @@ public class InvertedListObject {
         this.idCount = idCount;
     }
 
-    public void increaseCount(int num) {
+    public boolean containsID(int num) {
+        for(Tuple<Integer, Integer> ic : idCount) {
+            if(ic.getValue1() == num) {
+                return true;
+            }
+            else return false;
+        }
+        return false;
     }
     public void addEntryIC(Tuple<Integer, Integer> entry) {
         idCount.add(entry);
