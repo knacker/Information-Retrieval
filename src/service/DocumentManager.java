@@ -71,8 +71,8 @@ public class DocumentManager {
 
                 case task_linear_search_stopWords -> {
                     List<String> searchTerm = getSearchTerm();
-                    timeStart = System.nanoTime();
                     List<Document> clearedDocs = operator.filterWords(docs, sw);
+                    timeStart = System.nanoTime();
                     response = DocumentOperator.linearSearch(clearedDocs, searchTerm);
                     timeEnd = System.nanoTime();
                     timeDiff = timeEnd - timeStart;
@@ -243,7 +243,7 @@ public class DocumentManager {
 
                         i++;
                     }
-                    title = removePrefixSpace(line);
+                    title = WordListUtil.removePrefixSpace(line);
                     blanklineCount = 0;
 
                     continue;
@@ -393,17 +393,5 @@ public class DocumentManager {
         } else {
             return;
         }
-    }
-
-    private String removePrefixSpace(String name) {
-        String newName = name;
-        int i = 0;
-
-        while (name.charAt(i) == ' ') {
-            i++;
-            newName = name.substring(i);
-        }
-
-        return newName;
     }
 }

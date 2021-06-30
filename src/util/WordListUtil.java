@@ -41,4 +41,15 @@ public class WordListUtil {
         }
     }
 
+    public static String removePrefixSpace(String name) {
+        String newName = name;
+        int i = 0;
+
+        while (name.charAt(i) == ' ') {
+            i++;
+            newName = name.substring(i);
+        }
+
+        return newName;
+    }
 }
