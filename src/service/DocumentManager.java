@@ -4,6 +4,7 @@ import data.Document;
 import data.FilterList;
 import data.InvertedListObject;
 import util.Tuple;
+import util.VectorSpaceModel;
 import util.WordListUtil;
 
 import java.io.*;
@@ -25,6 +26,7 @@ public class DocumentManager {
     private List<Document> docs = new ArrayList<>();
     private List<InvertedListObject> invertedDocuments = new ArrayList<>();
     DocumentOperator operator;
+    VectorSpaceModel vsModel;
 
     private final int task_linear_search_original = 1;
     private final int task_linear_search_stopWords = 2;
@@ -35,6 +37,9 @@ public class DocumentManager {
 
     public DocumentManager() {
         operator = new DocumentOperator();
+        createDocuments();
+        createInvertList();
+        vsModel = new VectorSpaceModel(invertedDocuments, docs.size());
     }
 
     /**
@@ -42,9 +47,6 @@ public class DocumentManager {
      */
     public void handle() {
         boolean done = false;
-
-        createDocuments();
-        createInvertList();
 
         long timeStart = 0;
         long timeEnd = 0;
