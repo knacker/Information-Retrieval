@@ -1,33 +1,34 @@
 package util;
 
-import org.jetbrains.annotations.Contract;
-
-import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
+
+import static java.lang.Math.abs;
 
 public class SignatureUtil {
 
-    final int F = 64;
-    final int D = 4;
-
-    //count i-th hash function
-    int i = 0;
+    final static int F = 64;
+    final static int D = 4;
 
     static int primesSize = 1000000;
     static int [] primes = PrimeNumberUtil.createPrimeArray(primesSize);
 
-    public int hashStrings(List<String> words) {
+    public static BitSet hashStrings(String word) {
 
-        int hash = 0;
+        BitSet bits = new BitSet(F);
+        int index = 1000;
+            int hashposition = 0;
 
-        for(int k = 0; k < words.size(); k++) {
-            hash = (hash + words.get(k).hashCode()) * primes[i];
+            for (int k = 0; k < word.length(); k++) {
+                index++;
+                hashposition = (hashposition + Character.toString(word.charAt(k)).hashCode()) * primes[index];
+
+
+            hashposition = hashposition % 2^F;
+            bits.set(abs(hashposition));
+
         }
-
-        i++;
-        hash = hash % F;
-
-        return hash;
+        return bits;
     }
     public int getSignatureWeight() {
         int m = 0;
