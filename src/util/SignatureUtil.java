@@ -19,7 +19,7 @@ public class SignatureUtil {
 
         int initialPrimeIndex = primeIndex;
 
-        for(String word : words) {
+        for (String word : words) {
 
             BitSet wordbits = new BitSet(F);
 
@@ -32,12 +32,10 @@ public class SignatureUtil {
                 hashposition = (hashposition + word.hashCode()) * primes[primeIndex];
                 hashposition = hashposition % F;
 
-                //only set bits, if the number of bits set doesn't exceed the signature weight
-                if (setBits < m) {
-                    wordbits.set(abs(hashposition));
-                    setBits++;
-                    primeIndex++;
-                }
+                wordbits.set(abs(hashposition));
+                setBits++;
+                primeIndex++;
+
             }
             bits.or(wordbits);
             primeIndex = initialPrimeIndex;

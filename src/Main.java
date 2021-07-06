@@ -13,6 +13,7 @@ public class Main {
         //dm.handle();
         List<String> ls = new ArrayList<>();
         ls.add("döner");
+        ls.add("box");
         SignatureUtil.hashStrings(ls, 2);
         System.out.println("\nDone!");
     }
