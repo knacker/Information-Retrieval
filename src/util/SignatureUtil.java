@@ -11,28 +11,46 @@ public class SignatureUtil {
     final static int D = 4;
 
     static int primesSize = 1000000;
-    static int [] primes = PrimeNumberUtil.createPrimeArray(primesSize);
+    static int[] primes = PrimeNumberUtil.createPrimeArray(primesSize);
 
-    public static BitSet hashStrings(String word) {
+    public static BitSet hashStrings(List<String> words, int primeIndex) {
 
         BitSet bits = new BitSet(F);
-        int index = 1000;
+
+        int initialPrimeIndex = primeIndex;
+
+        for(String word : words) {
+
+            BitSet wordbits = new BitSet(F);
+
+            int setBits = 0;
             int hashposition = 0;
+            int m = getSignatureWeight();
 
-            for (int k = 0; k < word.length(); k++) {
-                index++;
-                hashposition = (hashposition + Character.toString(word.charAt(k)).hashCode()) * primes[index];
+            for (int i = 0; i < m; i++) {
 
+                hashposition = (hashposition + word.hashCode()) * primes[primeIndex];
+                hashposition = hashposition % F;
 
-            hashposition = hashposition % 2^F;
-            bits.set(abs(hashposition));
-
+                //only set bits, if the number of bits set doesn't exceed the signature weight
+                if (setBits < m) {
+                    wordbits.set(abs(hashposition));
+                    setBits++;
+                    primeIndex++;
+                }
+            }
+            bits.or(wordbits);
+            primeIndex = initialPrimeIndex;
         }
+
         return bits;
     }
-    public int getSignatureWeight() {
-        int m = 0;
 
-        return m;
+    /**
+     * @return the value m, which represents the number of bits, that should be set in a bitset
+     */
+    public static int getSignatureWeight() {
+        double m = F * (Math.log(2) / D);
+        return (int) m;
     }
 }

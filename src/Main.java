@@ -1,6 +1,8 @@
 import util.SignatureUtil;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,15 +11,9 @@ public class Main {
 
         //DocumentManager dm = new DocumentManager();
         //dm.handle();
-        BitSet b1 = new BitSet();
-        b1.set(2, 5, true);
-
-        BitSet b2 = SignatureUtil.hashStrings("text");
-
-        b1.and(b2);
-        System.out.println(SignatureUtil.hashStrings("text").toString());
-
-
+        List<String> ls = new ArrayList<>();
+        ls.add("döner");
+        SignatureUtil.hashStrings(ls, 2);
         System.out.println("\nDone!");
     }
 }

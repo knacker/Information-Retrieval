@@ -134,9 +134,8 @@ public class DocumentOperator {
     }
 
     /**
-     *
      * @param statement
-     * @param response of our IR-System
+     * @param response  of our IR-System
      * @return
      */
     public static int getNumberOfRelevantDocs(List<String> statement, List<Document> response) {
@@ -171,14 +170,14 @@ public class DocumentOperator {
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line = br.readLine().replace(",","");
+            String line = br.readLine().replace(",", "");
 
             while (!line.equals("")) {
 
                 all_words.add(getWord(line));
                 all_words_doc_id.add(getDocs(line));
 
-                line = br.readLine().replace(",","");
+                line = br.readLine().replace(",", "");
 
             }
         } catch (IOException e) {
