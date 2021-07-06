@@ -12,7 +12,7 @@ public class WordListUtil {
         ArrayList<String> newList = new ArrayList<>();
         for (String word : wordList) {
 
-            word = word.replaceAll("[.,;:\"!?\n]", "");
+            word = word.replaceAll("[.,;:\"!?\n]", " ");
             if (!word.isBlank()) {
                 newList.add(word.toLowerCase());
             }

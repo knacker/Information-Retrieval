@@ -1,3 +1,4 @@
+import service.DocumentManager;
 import util.SignatureUtil;
 
 import java.util.ArrayList;
@@ -9,12 +10,9 @@ public class Main {
 
         System.out.println("Launching...");
 
-        //DocumentManager dm = new DocumentManager();
-        //dm.handle();
-        List<String> ls = new ArrayList<>();
-        ls.add("döner");
-        ls.add("box");
-        SignatureUtil.hashStrings(ls, 2);
+        DocumentManager dm = new DocumentManager();
+        dm.handle();
+
         System.out.println("\nDone!");
     }
 }

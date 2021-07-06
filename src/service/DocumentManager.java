@@ -1,8 +1,10 @@
 package service;
 
 import data.Document;
+import data.DocumentSignatures;
 import data.FilterList;
 import data.InvertedListObject;
+import util.SignatureUtil;
 import util.Tuple;
 import util.WordListUtil;
 
@@ -24,6 +26,7 @@ public class DocumentManager {
     //initialize doclist
     private List<Document> docs = new ArrayList<>();
     private List<InvertedListObject> invertedDocuments = new ArrayList<>();
+    private List<DocumentSignatures> documentSignatures = new ArrayList<>();
     DocumentOperator operator;
 
     private final int task_linear_search_original = 1;
@@ -45,6 +48,7 @@ public class DocumentManager {
 
         createDocuments();
         createInvertList();
+        createDocumentSignatures();
 
         long timeStart = 0;
         long timeEnd = 0;
@@ -110,6 +114,7 @@ public class DocumentManager {
             }
         }
     }
+
 
     /**
      * print each document from response list
@@ -267,6 +272,18 @@ public class DocumentManager {
         }
     }
 
+    private void createDocumentSignatures() {
+        List<Document> clearedDocs = operator.filterWords(docs, sw);
+        for(Document doc : clearedDocs) {
+            List<Tuple<String, Integer>> wordsCounted = WordListUtil.createWordList(doc);
+            List<String> words = new ArrayList<>();
+            for(Tuple<String, Integer> tuple : wordsCounted) {
+                words.add(tuple.getValue1());
+            }
+            DocumentSignatures data = new DocumentSignatures(doc, SignatureUtil.blockHash(words));
+            documentSignatures.add(data);
+        }
+    }
 
     private void createInvertList() {
 

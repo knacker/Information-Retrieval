@@ -1,17 +1,16 @@
 package service;
 
-import data.Document;
-import data.FilterList;
-import data.InvertedListObject;
-import data.Model;
+import data.*;
 import util.*;
 
+import javax.print.Doc;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.StandardSocketOptions;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 
 public class DocumentOperator {
@@ -23,6 +22,18 @@ public class DocumentOperator {
         List<Document> foundDocs = new ArrayList<Document>();
         if (m == Model.BOOL) {
             foundDocs = linearSearch(docs, search);
+        }
+        return foundDocs;
+    }
+
+    public List<Document> searchSignatures(List<DocumentSignatures> docs, List<String> search) {
+        List<Document> foundDocs = new ArrayList<>();
+
+        BitSet searchSignature = SignatureUtil.hashStrings(search);
+
+        for(DocumentSignatures doc : docs) {
+            for(BitSet signature : doc.getSignatures()) {
+            }
         }
         return foundDocs;
     }

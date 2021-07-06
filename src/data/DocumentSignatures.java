@@ -6,6 +6,7 @@ import java.util.List;
 public class DocumentSignatures {
 
     Document doc;
+
     List<BitSet> signatures;
 
     public DocumentSignatures(Document doc, List<BitSet> signatures) {
@@ -23,4 +24,12 @@ public class DocumentSignatures {
         }
         return false;
     }
+
+    public Document getDoc() {
+        return doc;
+    }
+    public List<BitSet> getSignatures() {
+        return signatures;
+    }
+
 }
