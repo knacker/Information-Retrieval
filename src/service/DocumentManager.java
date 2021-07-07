@@ -1,8 +1,10 @@
 package service;
 
 import data.Document;
+import data.DocumentSignature;
 import data.FilterList;
 import data.InvertedListObject;
+import util.SignatureUtil;
 import util.Tuple;
 import util.VectorSpaceModel;
 import util.WordListUtil;
@@ -25,6 +27,7 @@ public class DocumentManager {
     //initialize doclist
     private List<Document> docs = new ArrayList<>();
     private List<InvertedListObject> invertedDocuments = new ArrayList<>();
+    private List<DocumentSignature> documentSignatures = new ArrayList<>();
     DocumentOperator operator;
     VectorSpaceModel vsModel;
 
@@ -33,13 +36,15 @@ public class DocumentManager {
     private final int task_linear_search_reduction = 3;
     private final int task_inverted_Search = 4;
     private final int task_vector_space_model_search = 5;
-    private final int task_save_docs = 6;
-    private final int task_quit_program = 7;
+    private final int task_signature_Search = 6;
+    private final int task_save_docs = 7;
+    private final int task_quit_program = 8;
 
     public DocumentManager() {
         operator = new DocumentOperator();
         createDocuments();
         createInvertList();
+        createDocumentSignatures();
         vsModel = new VectorSpaceModel(invertedDocuments, docs.size());
     }
 
@@ -63,6 +68,7 @@ public class DocumentManager {
             switch (task) {
                 case task_linear_search_original -> {
                     List<String> searchTerm = getSearchTerm();
+                    createDocumentSignatures();
                     timeStart = System.nanoTime();
                     response = DocumentOperator.linearSearch(docs, searchTerm);
                     timeEnd = System.nanoTime();
@@ -107,6 +113,17 @@ public class DocumentManager {
                     printSearchResponse(response, recall, precision, timeDiff);
                 }
 
+                case task_signature_Search ->  {
+                    List<String> searchTerm = getSearchTerm();
+                    timeStart = System.nanoTime();
+                    response = DocumentOperator.searchSignatures(documentSignatures, searchTerm);
+                    timeEnd = System.nanoTime();
+                    timeDiff = timeEnd - timeStart;
+                    recall = DocumentOperator.calculateRecall(searchTerm, response);
+                    precision = DocumentOperator.calculatePrecision(searchTerm, response);
+                    printSearchResponse(response, recall, precision, timeDiff);
+                }
+
                 case task_vector_space_model_search -> {
                     String[] query = getQueryVectorSpace();
                     timeStart = System.nanoTime();
@@ -127,6 +144,7 @@ public class DocumentManager {
             }
         }
     }
+
 
     /**
      * print each document from response list
@@ -212,6 +230,7 @@ public class DocumentManager {
         System.out.println(task_linear_search_reduction + ". Lineare Suche (auf Stammform reduzierte Dokumente)");
         System.out.println(task_inverted_Search + ". Suche auf Basis einer invertierten Liste");
         System.out.println(task_vector_space_model_search + ". Suche mit dem Vektorraummodell");
+        System.out.println(task_signature_Search + ". Suche auf Basis von Signaturen");
         System.out.println(task_save_docs + ". Dokumente speichern");
         System.out.println(task_quit_program + ". Programm beenden");
         System.out.println();
@@ -293,6 +312,18 @@ public class DocumentManager {
         }
     }
 
+    private void createDocumentSignatures() {
+        List<Document> clearedDocs = operator.filterWords(docs, sw);
+        for(Document doc : clearedDocs) {
+            List<Tuple<String, Integer>> wordsCounted = WordListUtil.createWordList(doc);
+            List<String> words = new ArrayList<>();
+            for(Tuple<String, Integer> tuple : wordsCounted) {
+                words.add(tuple.getValue1());
+            }
+            DocumentSignature data = new DocumentSignature(doc, SignatureUtil.blockHash(words));
+            documentSignatures.add(data);
+        }
+    }
 
     private void createInvertList() {
 

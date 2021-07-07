@@ -1,17 +1,14 @@
 package service;
 
-import data.Document;
-import data.FilterList;
-import data.InvertedListObject;
-import data.Model;
+import data.*;
 import util.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.StandardSocketOptions;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 
 public class DocumentOperator {
@@ -24,6 +21,23 @@ public class DocumentOperator {
         if (m == Model.BOOL) {
             foundDocs = linearSearch(docs, search);
         }
+        return foundDocs;
+    }
+
+    public static List<Document> searchSignatures(List<DocumentSignature> docs, List<String> search) {
+
+        List<Document> matchingSignatureDocs = new ArrayList<>();
+        List<Document> foundDocs;
+
+        BitSet searchSignature = SignatureUtil.hashStrings(search);
+        for(DocumentSignature doc : docs) {
+           if(doc.containsSignature(searchSignature)) {
+               matchingSignatureDocs.add(doc.getDoc());
+           }
+        }
+        //filter false drops
+        foundDocs = linearSearch(matchingSignatureDocs, search);
+
         return foundDocs;
     }
 
@@ -44,7 +58,7 @@ public class DocumentOperator {
             content = content.toLowerCase();
 
             for (String filter : filterL.getList()) {
-                content = content.replaceAll(" " + filter + " ", "");
+                content = content.replaceAll(" " + filter + " ", " ");
             }
 
             Document filteredDoc = new Document(i, doc.getName(), content);
@@ -57,8 +71,13 @@ public class DocumentOperator {
     }
 
     public static List<Document> linearSearch(List<Document> docs, List<String> search) {
+
         List<Document> foundDocs = new ArrayList<>();
         Parser pars = new Parser();
+
+        if(docs.isEmpty()) {
+            return foundDocs;
+        }
 
         for (Document doc : docs) {
             if (pars.evalExpression(search, doc.getContent(), null)) {
@@ -134,9 +153,8 @@ public class DocumentOperator {
     }
 
     /**
-     *
      * @param statement
-     * @param response of our IR-System
+     * @param response  of our IR-System
      * @return
      */
     public static int getNumberOfRelevantDocs(List<String> statement, List<Document> response) {
@@ -171,14 +189,14 @@ public class DocumentOperator {
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line = br.readLine().replace(",","");
+            String line = br.readLine().replace(",", "");
 
             while (!line.equals("")) {
 
                 all_words.add(getWord(line));
                 all_words_doc_id.add(getDocs(line));
 
-                line = br.readLine().replace(",","");
+                line = br.readLine().replace(",", "");
 
             }
         } catch (IOException e) {
