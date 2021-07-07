@@ -32,8 +32,9 @@ public class DocumentManager {
     private final int task_linear_search_stopWords = 2;
     private final int task_linear_search_reduction = 3;
     private final int task_inverted_Search = 4;
-    private final int task_save_docs = 5;
-    private final int task_quit_program = 6;
+    private final int task_vector_space_model_search = 5;
+    private final int task_save_docs = 6;
+    private final int task_quit_program = 7;
 
     public DocumentManager() {
         operator = new DocumentOperator();
@@ -106,6 +107,20 @@ public class DocumentManager {
                     printSearchResponse(response, recall, precision, timeDiff);
                 }
 
+                case task_vector_space_model_search -> {
+                    String[] query = getQueryVectorSpace();
+                    timeStart = System.nanoTime();
+                    vsModel.setQueryVector(query);
+                    int[] topDocs = vsModel.getTopDocs();
+                    for (int i : topDocs) {
+                        response.add(docs.get(i));
+                    }
+                    timeEnd = System.nanoTime();
+                    timeDiff = timeEnd - timeStart;
+                    printSearchResponse(response, 0,0, timeDiff);
+                    response.clear();
+                }
+
                 case task_save_docs -> saveDocs();
 
                 case task_quit_program -> done = true;
@@ -153,6 +168,14 @@ public class DocumentManager {
         return scanner.nextLine();
     }
 
+    private String[] getQueryVectorSpace() {
+        Scanner scanner = new Scanner(new InputStreamReader(System.in));
+
+        System.out.print("Gebe eine Suchanfrage ein: ");
+
+        return (scanner.nextLine().split(" "));
+    }
+
     /**
      * new input: instead of &(fish) use: & ( fish )
      *
@@ -188,6 +211,7 @@ public class DocumentManager {
         System.out.println(task_linear_search_stopWords + ". Lineare Suche (Stoppwort-freie Dokumente)");
         System.out.println(task_linear_search_reduction + ". Lineare Suche (auf Stammform reduzierte Dokumente)");
         System.out.println(task_inverted_Search + ". Suche auf Basis einer invertierten Liste");
+        System.out.println(task_vector_space_model_search + ". Suche mit dem Vektorraummodell");
         System.out.println(task_save_docs + ". Dokumente speichern");
         System.out.println(task_quit_program + ". Programm beenden");
         System.out.println();

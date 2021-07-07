@@ -1,5 +1,6 @@
 package util;
 
+import data.HelpDataStructure;
 import data.InvertedListObject;
 
 import java.text.DecimalFormat;
@@ -12,6 +13,10 @@ public class VectorSpaceModel {
 
     private double[][] vectors;
 
+    private final int gamma = 5;
+
+    private double[] qVector;
+
     public VectorSpaceModel(List<InvertedListObject> invertedDocuments, int docs_count) {
         this.invertedDocuments = invertedDocuments;
         this.vectors = new double[docs_count][invertedDocuments.size()];
@@ -23,14 +28,62 @@ public class VectorSpaceModel {
             }
         }
 
-        showList();
+        this.vectors = tfidf();
+    }
 
-        showVectors(this.vectors);
-        double[][] tfidfVectors = tfidf();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        showVectors(tfidfVectors);
+    public int[] getTopDocs() {
+
+        HelpDataStructure ds = new HelpDataStructure();
+
+        for (int i = 0; i < this.qVector.length; i++) {
+            if (this.qVector[i] > 0) {
+                InvertedListObject k = this.invertedDocuments.get(i);
+
+                initList(k);
+
+                while (notEndOfList(k)) {
+                    Tuple<Integer, Double> nextElement = getNextElemOfList(k);
+                    int docID = nextElement.getValue1();
+                    double wdk = this.vectors[docID][getWordIndex(k.getWord())];
+
+                    double value = wdk * this.qVector[i];
+
+                    if (ds.isInDS(docID)) {
+                        ds.addToDSEntry(docID, value);
+                    } else {
+                        ds.insertIntoDS(docID, value);
+                    }
+                }
+
+                List<Tuple<Integer, Double>> topDocs = ds.getTopDocs(gamma);
+
+                if (topDocs.size() > 1) {
+                    if (topDocs.get(topDocs.size() - 2).getValue2() >= topDocs.get(topDocs.size() - 1).getValue2() + maxRemainingWeight(i+1)) {
+                        int[] docs = new int[topDocs.size()];
+
+                        for (int j = 0; j < docs.length; j++) {
+                            docs[j] = topDocs.get(j).getValue1();
+                        }
+
+                        return docs;
+                    }
+                }
+            }
+        }
+
+        return new int[]{};
+    }
+
+    private double maxRemainingWeight(int start_index) {
+        double weight = 0;
+
+        if (start_index < this.qVector.length) {
+            for (int i = start_index; i < this.qVector.length; i++) {
+                weight += this.qVector[i];
+            }
+        }
+
+        return weight;
     }
 
     private double[][] tfidf() {
@@ -129,8 +182,13 @@ public class VectorSpaceModel {
         }
     }
 
-    public double[] getQueryVector(String[] request) {
-        double[] qVector = new double[this.vectors[0].length];
+    public void setQueryVector(String[] request) {
+        this.qVector = new double[this.vectors[0].length];
+
+        // reset query vector
+        for (double d : this.qVector) {
+            d = 0;
+        }
 
         // get TF max
         int maxTF = 0;
@@ -142,16 +200,14 @@ public class VectorSpaceModel {
             }
         }
 
-        for (int i = 0; i < qVector.length; i++) {
+        for (int i = 0; i < this.qVector.length; i++) {
             String word = this.invertedDocuments.get(i).getWord();
             int tf = getTFquery(request, word);
 
             if (tf > 0) {
-                qVector[i] = (0.5 + (0.5 * tf / maxTF)) * Math.log10((double) this.vectors.length / this.invertedDocuments.get(getWordIndex(word)).getIdCount().size());
+                this.qVector[i] = (0.5 + (0.5 * tf / maxTF)) * Math.log10((double) this.vectors.length / this.invertedDocuments.get(getWordIndex(word)).getIdCount().size());
             }
         }
-
-        return qVector;
     }
 
     private int getTFquery(String[] request, String word) {
@@ -163,4 +219,24 @@ public class VectorSpaceModel {
 
         return count;
     }
+
+    // functions for inverted List
+    private void initList(InvertedListObject k) {
+        k.setContinuousPointer(0);
+    }
+
+    private Tuple<Integer, Double> getNextElemOfList(InvertedListObject k) {
+        int actual_pointer = k.getContinuousPointer();
+        int docID = k.getIdCount().get(actual_pointer).getValue1();
+        double wdk = k.getIdCount().get(actual_pointer).getValue2();
+
+        k.setContinuousPointer(actual_pointer + 1);
+
+        return new Tuple<>(docID, wdk);
+    }
+
+    private boolean notEndOfList(InvertedListObject k) {
+        return k.getContinuousPointer() < k.getIdCount().size();
+    }
+
 }

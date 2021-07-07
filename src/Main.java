@@ -9,7 +9,7 @@ public class Main {
         System.out.println("Launching...");
 
         DocumentManager dm = new DocumentManager();
-        //dm.handle();
+        dm.handle();
 
         System.out.println("\nDone!");
     }
