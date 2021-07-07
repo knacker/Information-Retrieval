@@ -35,12 +35,27 @@ public class DocumentOperator {
         newSearch.remove("(");
         newSearch.remove(")");
         newSearch.remove("&");
+        newSearch.remove("|");
 
-        BitSet searchSignature = SignatureUtil.hashStrings(newSearch);
-        for(DocumentSignature doc : docs) {
-           if(doc.containsSignature(searchSignature)) {
-               matchingSignatureDocs.add(doc.getDoc());
-           }
+        List<BitSet> searchSignatures = new ArrayList<>();
+        boolean konjunktion = search.get(0).equals("&");
+
+        //konjunktion/disjunktion von 2 suchbegriffen
+        searchSignatures.add(SignatureUtil.hashStrings(newSearch.subList(0, 1)));
+        if (newSearch.size() > 1) {
+            if (konjunktion) {
+                searchSignatures.get(0).and(SignatureUtil.hashStrings(newSearch.subList(1, 2)));
+            } else {
+                searchSignatures.add(SignatureUtil.hashStrings(newSearch.subList(1, 2)));
+            }
+        }
+
+        for (DocumentSignature doc : docs) {
+            for (BitSet set : searchSignatures) {
+                if (doc.containsSignature(set)) {
+                    matchingSignatureDocs.add(doc.getDoc());
+                }
+            }
         }
         //filter false drops
         foundDocs = linearSearch(matchingSignatureDocs, search);
@@ -82,7 +97,7 @@ public class DocumentOperator {
         List<Document> foundDocs = new ArrayList<>();
         Parser pars = new Parser();
 
-        if(docs.isEmpty()) {
+        if (docs.isEmpty()) {
             return foundDocs;
         }
 
