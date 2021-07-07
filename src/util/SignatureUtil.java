@@ -26,6 +26,7 @@ public class SignatureUtil {
                     lastWords.add(word);
                 }
                 blocks.add(hashStrings(lastWords));
+                return blocks;
             } else {
                 blocks.add(hashStrings(words.subList(0, D)));
                 words = words.subList(D, words.size());

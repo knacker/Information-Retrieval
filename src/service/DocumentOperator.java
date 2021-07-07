@@ -3,11 +3,9 @@ package service;
 import data.*;
 import util.*;
 
-import javax.print.Doc;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.StandardSocketOptions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -26,12 +24,12 @@ public class DocumentOperator {
         return foundDocs;
     }
 
-    public List<Document> searchSignatures(List<DocumentSignatures> docs, List<String> search) {
+    public List<Document> searchSignatures(List<DocumentSignature> docs, List<String> search) {
         List<Document> foundDocs = new ArrayList<>();
 
         BitSet searchSignature = SignatureUtil.hashStrings(search);
 
-        for(DocumentSignatures doc : docs) {
+        for(DocumentSignature doc : docs) {
             for(BitSet signature : doc.getSignatures()) {
             }
         }
@@ -55,7 +53,7 @@ public class DocumentOperator {
             content = content.toLowerCase();
 
             for (String filter : filterL.getList()) {
-                content = content.replaceAll(" " + filter + " ", "");
+                content = content.replaceAll(" " + filter + " ", " ");
             }
 
             Document filteredDoc = new Document(i, doc.getName(), content);

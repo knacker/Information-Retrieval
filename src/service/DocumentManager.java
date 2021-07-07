@@ -1,7 +1,7 @@
 package service;
 
 import data.Document;
-import data.DocumentSignatures;
+import data.DocumentSignature;
 import data.FilterList;
 import data.InvertedListObject;
 import util.SignatureUtil;
@@ -26,7 +26,7 @@ public class DocumentManager {
     //initialize doclist
     private List<Document> docs = new ArrayList<>();
     private List<InvertedListObject> invertedDocuments = new ArrayList<>();
-    private List<DocumentSignatures> documentSignatures = new ArrayList<>();
+    private List<DocumentSignature> documentSignatures = new ArrayList<>();
     DocumentOperator operator;
 
     private final int task_linear_search_original = 1;
@@ -64,6 +64,7 @@ public class DocumentManager {
             switch (task) {
                 case task_linear_search_original -> {
                     List<String> searchTerm = getSearchTerm();
+                    createDocumentSignatures();
                     timeStart = System.nanoTime();
                     response = DocumentOperator.linearSearch(docs, searchTerm);
                     timeEnd = System.nanoTime();
@@ -280,7 +281,7 @@ public class DocumentManager {
             for(Tuple<String, Integer> tuple : wordsCounted) {
                 words.add(tuple.getValue1());
             }
-            DocumentSignatures data = new DocumentSignatures(doc, SignatureUtil.blockHash(words));
+            DocumentSignature data = new DocumentSignature(doc, SignatureUtil.blockHash(words));
             documentSignatures.add(data);
         }
     }

@@ -3,13 +3,13 @@ package data;
 import java.util.BitSet;
 import java.util.List;
 
-public class DocumentSignatures {
+public class DocumentSignature {
 
     Document doc;
 
     List<BitSet> signatures;
 
-    public DocumentSignatures(Document doc, List<BitSet> signatures) {
+    public DocumentSignature(Document doc, List<BitSet> signatures) {
         this.doc = doc;
         this.signatures = signatures;
     }
