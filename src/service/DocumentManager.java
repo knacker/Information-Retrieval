@@ -6,6 +6,7 @@ import data.FilterList;
 import data.InvertedListObject;
 import util.SignatureUtil;
 import util.Tuple;
+import util.VectorSpaceModel;
 import util.WordListUtil;
 
 import java.io.*;
@@ -28,18 +29,23 @@ public class DocumentManager {
     private List<InvertedListObject> invertedDocuments = new ArrayList<>();
     private List<DocumentSignature> documentSignatures = new ArrayList<>();
     DocumentOperator operator;
+    VectorSpaceModel vsModel;
 
     private final int task_linear_search_original = 1;
     private final int task_linear_search_stopWords = 2;
     private final int task_linear_search_reduction = 3;
     private final int task_inverted_Search = 4;
+    private final int task_vector_space_model_search = 5;
     private final int task_signature_Search = 6;
     private final int task_save_docs = 7;
     private final int task_quit_program = 8;
 
-
     public DocumentManager() {
         operator = new DocumentOperator();
+        createDocuments();
+        createInvertList();
+        createDocumentSignatures();
+        vsModel = new VectorSpaceModel(invertedDocuments, docs.size());
     }
 
     /**
@@ -47,10 +53,6 @@ public class DocumentManager {
      */
     public void handle() {
         boolean done = false;
-
-        createDocuments();
-        createInvertList();
-        createDocumentSignatures();
 
         long timeStart = 0;
         long timeEnd = 0;
@@ -110,6 +112,7 @@ public class DocumentManager {
                     precision = DocumentOperator.calculatePrecision(searchTerm, response);
                     printSearchResponse(response, recall, precision, timeDiff);
                 }
+
                 case task_signature_Search ->  {
                     List<String> searchTerm = getSearchTerm();
                     timeStart = System.nanoTime();
@@ -119,6 +122,20 @@ public class DocumentManager {
                     recall = DocumentOperator.calculateRecall(searchTerm, response);
                     precision = DocumentOperator.calculatePrecision(searchTerm, response);
                     printSearchResponse(response, recall, precision, timeDiff);
+                }
+
+                case task_vector_space_model_search -> {
+                    String[] query = getQueryVectorSpace();
+                    timeStart = System.nanoTime();
+                    vsModel.setQueryVector(query);
+                    int[] topDocs = vsModel.getTopDocs();
+                    for (int i : topDocs) {
+                        response.add(docs.get(i));
+                    }
+                    timeEnd = System.nanoTime();
+                    timeDiff = timeEnd - timeStart;
+                    printSearchResponse(response, 0,0, timeDiff);
+                    response.clear();
                 }
 
                 case task_save_docs -> saveDocs();
@@ -169,6 +186,14 @@ public class DocumentManager {
         return scanner.nextLine();
     }
 
+    private String[] getQueryVectorSpace() {
+        Scanner scanner = new Scanner(new InputStreamReader(System.in));
+
+        System.out.print("Gebe eine Suchanfrage ein: ");
+
+        return (scanner.nextLine().split(" "));
+    }
+
     /**
      * new input: instead of &(fish) use: & ( fish )
      *
@@ -204,6 +229,7 @@ public class DocumentManager {
         System.out.println(task_linear_search_stopWords + ". Lineare Suche (Stoppwort-freie Dokumente)");
         System.out.println(task_linear_search_reduction + ". Lineare Suche (auf Stammform reduzierte Dokumente)");
         System.out.println(task_inverted_Search + ". Suche auf Basis einer invertierten Liste");
+        System.out.println(task_vector_space_model_search + ". Suche mit dem Vektorraummodell");
         System.out.println(task_signature_Search + ". Suche auf Basis von Signaturen");
         System.out.println(task_save_docs + ". Dokumente speichern");
         System.out.println(task_quit_program + ". Programm beenden");
