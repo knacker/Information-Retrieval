@@ -24,15 +24,20 @@ public class DocumentOperator {
         return foundDocs;
     }
 
-    public List<Document> searchSignatures(List<DocumentSignature> docs, List<String> search) {
-        List<Document> foundDocs = new ArrayList<>();
+    public static List<Document> searchSignatures(List<DocumentSignature> docs, List<String> search) {
+
+        List<Document> matchingSignatureDocs = new ArrayList<>();
+        List<Document> foundDocs;
 
         BitSet searchSignature = SignatureUtil.hashStrings(search);
-
         for(DocumentSignature doc : docs) {
-            for(BitSet signature : doc.getSignatures()) {
-            }
+           if(doc.containsSignature(searchSignature)) {
+               matchingSignatureDocs.add(doc.getDoc());
+           }
         }
+        //filter false drops
+        foundDocs = linearSearch(matchingSignatureDocs, search);
+
         return foundDocs;
     }
 
@@ -66,8 +71,13 @@ public class DocumentOperator {
     }
 
     public static List<Document> linearSearch(List<Document> docs, List<String> search) {
+
         List<Document> foundDocs = new ArrayList<>();
         Parser pars = new Parser();
+
+        if(docs.isEmpty()) {
+            return foundDocs;
+        }
 
         for (Document doc : docs) {
             if (pars.evalExpression(search, doc.getContent(), null)) {

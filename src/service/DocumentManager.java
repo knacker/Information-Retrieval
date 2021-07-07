@@ -33,8 +33,10 @@ public class DocumentManager {
     private final int task_linear_search_stopWords = 2;
     private final int task_linear_search_reduction = 3;
     private final int task_inverted_Search = 4;
-    private final int task_save_docs = 5;
-    private final int task_quit_program = 6;
+    private final int task_signature_Search = 6;
+    private final int task_save_docs = 7;
+    private final int task_quit_program = 8;
+
 
     public DocumentManager() {
         operator = new DocumentOperator();
@@ -102,6 +104,16 @@ public class DocumentManager {
                     List<String> searchTerm = getSearchTerm();
                     timeStart = System.nanoTime();
                     response = DocumentOperator.invertedSearch(docs, invertedDocuments, searchTerm);
+                    timeEnd = System.nanoTime();
+                    timeDiff = timeEnd - timeStart;
+                    recall = DocumentOperator.calculateRecall(searchTerm, response);
+                    precision = DocumentOperator.calculatePrecision(searchTerm, response);
+                    printSearchResponse(response, recall, precision, timeDiff);
+                }
+                case task_signature_Search ->  {
+                    List<String> searchTerm = getSearchTerm();
+                    timeStart = System.nanoTime();
+                    response = DocumentOperator.searchSignatures(documentSignatures, searchTerm);
                     timeEnd = System.nanoTime();
                     timeDiff = timeEnd - timeStart;
                     recall = DocumentOperator.calculateRecall(searchTerm, response);
@@ -192,6 +204,7 @@ public class DocumentManager {
         System.out.println(task_linear_search_stopWords + ". Lineare Suche (Stoppwort-freie Dokumente)");
         System.out.println(task_linear_search_reduction + ". Lineare Suche (auf Stammform reduzierte Dokumente)");
         System.out.println(task_inverted_Search + ". Suche auf Basis einer invertierten Liste");
+        System.out.println(task_signature_Search + ". Suche auf Basis von Signaturen");
         System.out.println(task_save_docs + ". Dokumente speichern");
         System.out.println(task_quit_program + ". Programm beenden");
         System.out.println();

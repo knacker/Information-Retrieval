@@ -14,7 +14,7 @@ public class DocumentSignature {
         this.signatures = signatures;
     }
 
-    public boolean docContainsSignature(BitSet signature) {
+    public boolean containsSignature(BitSet signature) {
         for(BitSet set : signatures) {
             BitSet temp = set;
             temp.and(signature);
