@@ -30,15 +30,15 @@ public class DocumentOperator {
         List<Document> foundDocs;
 
         List<String> newSearch = new ArrayList<>(search);
+        List<BitSet> searchSignatures = new ArrayList<>();
+
+        boolean konjunktion = search.get(0).equals("&");
 
         //remove parantheses
         newSearch.remove("(");
         newSearch.remove(")");
         newSearch.remove("&");
         newSearch.remove("|");
-
-        List<BitSet> searchSignatures = new ArrayList<>();
-        boolean konjunktion = search.get(0).equals("&");
 
         //konjunktion/disjunktion von 2 suchbegriffen
         searchSignatures.add(SignatureUtil.hashStrings(newSearch.subList(0, 1)));
