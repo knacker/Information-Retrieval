@@ -29,7 +29,14 @@ public class DocumentOperator {
         List<Document> matchingSignatureDocs = new ArrayList<>();
         List<Document> foundDocs;
 
-        BitSet searchSignature = SignatureUtil.hashStrings(search);
+        List<String> newSearch = new ArrayList<>(search);
+
+        //remove parantheses
+        newSearch.remove("(");
+        newSearch.remove(")");
+        newSearch.remove("&");
+
+        BitSet searchSignature = SignatureUtil.hashStrings(newSearch);
         for(DocumentSignature doc : docs) {
            if(doc.containsSignature(searchSignature)) {
                matchingSignatureDocs.add(doc.getDoc());
