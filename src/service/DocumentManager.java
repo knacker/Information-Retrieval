@@ -129,6 +129,7 @@ public class DocumentManager {
                     timeStart = System.nanoTime();
                     vsModel.setQueryVector(query);
                     int[] topDocs = vsModel.getTopDocs();
+                    response.clear();
                     for (int i : topDocs) {
                         response.add(docs.get(i));
                     }
