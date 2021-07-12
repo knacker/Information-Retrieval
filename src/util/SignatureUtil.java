@@ -10,6 +10,7 @@ public class SignatureUtil {
 
     final static int F = 64;
     final static int D = 4;
+    final static int M = getSignatureWeight();
     final static int PRIMEINDEX = 10;
 
     static int primesSize = 1000000;
@@ -45,14 +46,19 @@ public class SignatureUtil {
             BitSet wordbits = new BitSet(F);
 
             int hashposition = 0;
-            int m = getSignatureWeight();
+            int bitsSet = M;
 
-            for (int i = 0; i < m; i++) {
+            while(bitsSet > 0) {
 
                 hashposition = (hashposition + word.hashCode()) * primes[primeIndex];
                 hashposition = hashposition % F;
 
-                wordbits.set(abs(hashposition));
+                if(wordbits.get(abs(hashposition)) == false) {
+                    bitsSet--;
+                } else {
+                    wordbits.set(abs(hashposition));
+                    bitsSet++;
+                }
                 primeIndex++;
 
             }

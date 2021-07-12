@@ -22,6 +22,7 @@ public class DocumentSignature {
                 return true;
             }
         }
+
         return false;
     }
 

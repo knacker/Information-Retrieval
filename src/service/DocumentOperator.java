@@ -39,14 +39,14 @@ public class DocumentOperator {
         newSearch.remove(")");
         newSearch.remove("&");
         newSearch.remove("|");
-
+         SignatureUtil.hashStrings(newSearch.subList(0, 1));
         //konjunktion/disjunktion von 2 suchbegriffen
         searchSignatures.add(SignatureUtil.hashStrings(newSearch.subList(0, 1)));
         if (newSearch.size() > 1) {
             if (konjunktion) {
                 searchSignatures.get(0).and(SignatureUtil.hashStrings(newSearch.subList(1, 2)));
             } else {
-                searchSignatures.add(SignatureUtil.hashStrings(newSearch.subList(1, 2)));
+                searchSignatures.get(0).or(SignatureUtil.hashStrings(newSearch.subList(1, 2)));
             }
         }
 
@@ -61,6 +61,13 @@ public class DocumentOperator {
         foundDocs = linearSearch(matchingSignatureDocs, search);
 
         return foundDocs;
+    }
+    public static long convert(BitSet bits) {
+        long value = 0L;
+        for (int i = 0; i < bits.length(); ++i) {
+            value += bits.get(i) ? (1L << i) : 0L;
+        }
+        return value;
     }
 
     public List<Document> filterWords(List<Document> docs, FilterList filterL) {
