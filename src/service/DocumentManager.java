@@ -65,10 +65,11 @@ public class DocumentManager {
         while (!done) {
             int task = getTask();
 
+            response.clear();
+
             switch (task) {
                 case task_linear_search_original -> {
                     List<String> searchTerm = getSearchTerm();
-                    createDocumentSignatures();
                     timeStart = System.nanoTime();
                     response = DocumentOperator.linearSearch(docs, searchTerm);
                     timeEnd = System.nanoTime();
@@ -122,6 +123,7 @@ public class DocumentManager {
                     recall = DocumentOperator.calculateRecall(searchTerm, response);
                     precision = DocumentOperator.calculatePrecision(searchTerm, response);
                     printSearchResponse(response, recall, precision, timeDiff);
+
                 }
 
                 case task_vector_space_model_search -> {
@@ -129,14 +131,12 @@ public class DocumentManager {
                     timeStart = System.nanoTime();
                     vsModel.setQueryVector(query);
                     int[] topDocs = vsModel.getTopDocs();
-                    response.clear();
                     for (int i : topDocs) {
                         response.add(docs.get(i));
                     }
                     timeEnd = System.nanoTime();
                     timeDiff = timeEnd - timeStart;
                     printSearchResponse(response, 0,0, timeDiff);
-                    response.clear();
                 }
 
                 case task_save_docs -> saveDocs();
@@ -158,7 +158,7 @@ public class DocumentManager {
             System.out.println("\nDeine Suche hat folgende relevante Dokumente geliefert : ");
 
             for (Document doc: response) {
-                System.out.println("\t" + doc.getName());
+                System.out.println("\t" + doc.getName() + " " + doc.getId());
             }
 
             if (recall != 0 || precision != 0) {

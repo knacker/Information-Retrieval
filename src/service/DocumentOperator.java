@@ -3,6 +3,7 @@ package service;
 import data.*;
 import util.*;
 
+import javax.print.Doc;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -71,7 +72,6 @@ public class DocumentOperator {
     }
 
     public List<Document> filterWords(List<Document> docs, FilterList filterL) {
-
         List<Document> filteredDocs = new ArrayList<Document>();
 
         String content;
@@ -90,12 +90,16 @@ public class DocumentOperator {
                 content = content.replaceAll(" " + filter + " ", " ");
             }
 
+            // twice, because of a bug
+            for (String filter : filterL.getList()) {
+                content = content.replaceAll(" " + filter + " ", " ");
+            }
+
             Document filteredDoc = new Document(i, doc.getName(), content);
             filteredDocs.add(filteredDoc);
             i++;
 
         }
-
         return filteredDocs;
     }
 
