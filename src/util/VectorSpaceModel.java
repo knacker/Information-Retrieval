@@ -174,9 +174,9 @@ public class VectorSpaceModel {
 
         DecimalFormat formatter = new DecimalFormat("#.###");
 
-        for (int i = 0; i < vectors.length; i++) {
-            for (int j = 0 ;  j < vectors[i].length; j++) {
-                System.out.print(formatter.format(vectors[i][j]) + "; ");
+        for (double[] vector : vectors) {
+            for (int j = 0; j < vector.length; j++) {
+                System.out.print(formatter.format(vector[j]) + "; ");
             }
             System.out.println(" ENDE ");
         }

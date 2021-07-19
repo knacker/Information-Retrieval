@@ -12,7 +12,7 @@ package util;
 public class PrimeNumberUtil {
 
     private enum Marker{
-        CROSSED, UNCROSSED;
+        CROSSED, UNCROSSED
     }
 
     private static Marker[] crossedOut;

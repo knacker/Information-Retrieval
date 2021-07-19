@@ -22,12 +22,12 @@ import java.util.Scanner;
 public class DocumentManager {
 
     //initialize stopword list and "grundstammreduktionslist", welche aber noch nicht vorhanden ist
-    private FilterList sw = FilterList.createSW();
+    private final FilterList sw = FilterList.createSW();
 
     //initialize doclist
-    private List<Document> docs = new ArrayList<>();
-    private List<InvertedListObject> invertedDocuments = new ArrayList<>();
-    private List<DocumentSignature> documentSignatures = new ArrayList<>();
+    private final List<Document> docs = new ArrayList<>();
+    private final List<InvertedListObject> invertedDocuments = new ArrayList<>();
+    private final List<DocumentSignature> documentSignatures = new ArrayList<>();
     DocumentOperator operator;
     VectorSpaceModel vsModel;
 
@@ -54,13 +54,13 @@ public class DocumentManager {
     public void handle() {
         boolean done = false;
 
-        long timeStart = 0;
-        long timeEnd = 0;
-        long timeDiff = 0;
+        long timeStart;
+        long timeEnd;
+        long timeDiff;
 
         List<Document> response = new ArrayList<>();
-        double recall = 0;
-        double precision = 0;
+        double recall;
+        double precision;
 
         while (!done) {
             int task = getTask();
@@ -176,17 +176,6 @@ public class DocumentManager {
 
     }
 
-    /**
-     * @return search input of the user
-     */
-    private String getSearchWord() {
-        Scanner scanner = new Scanner(new InputStreamReader(System.in));
-
-        System.out.print("Gebe ein Suchwort ein : ");
-
-        return scanner.nextLine();
-    }
-
     private String[] getQueryVectorSpace() {
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
 
@@ -198,7 +187,7 @@ public class DocumentManager {
     /**
      * new input: instead of &(fish) use: & ( fish )
      *
-     * @return
+     * @return formatted search term, so it always has the same form
      */
     private List<String> getSearchTerm() {
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
@@ -270,7 +259,7 @@ public class DocumentManager {
                 br.readLine();
             }
 
-            String line = "";
+            String line;
             String title = "";
             String content = "";
 
@@ -335,10 +324,10 @@ public class DocumentManager {
             //create List of words of a document, which contains the number of occurences for each word
             List<Tuple<String, Integer>> wordsCounted = WordListUtil.createWordList(doc);
 
-            for (int i = 0; i < wordsCounted.size(); i++) {
+            for (Tuple<String, Integer> stringIntegerTuple : wordsCounted) {
                 List<Tuple<Integer, Integer>> tpList = new ArrayList<>();
-                tpList.add(new Tuple<>(doc.getId(), wordsCounted.get(i).getValue2()));
-                invertedDocuments.add(new InvertedListObject(wordsCounted.get(i).getValue1(), tpList));
+                tpList.add(new Tuple<>(doc.getId(), stringIntegerTuple.getValue2()));
+                invertedDocuments.add(new InvertedListObject(stringIntegerTuple.getValue1(), tpList));
             }
             //merge duplicates
 
@@ -433,9 +422,9 @@ public class DocumentManager {
     public void loadFile(File file) throws IOException {
 
         if (!file.isDirectory()) {
-            String title = "";
+            String title;
             String content = "";
-            String line = "";
+            String line;
 
             try (BufferedReader br = new BufferedReader(new FileReader(file.getAbsolutePath()))) {
 
@@ -448,8 +437,6 @@ public class DocumentManager {
                 Document doc = new Document(docs.size(), title, content);
                 docs.add(doc);
             }
-        } else {
-            return;
-        }
+         }
     }
 }

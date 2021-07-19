@@ -16,6 +16,7 @@ public class DocumentSignature {
 
     public boolean containsSignature(BitSet signature) {
         for(BitSet set : signatures) {
+            //create temporary bitset, so it doesn't change the existing bit in a documents signature
             BitSet temp = set;
             temp.and(signature);
             if(temp.equals(signature)) {

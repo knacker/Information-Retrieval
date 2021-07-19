@@ -53,7 +53,7 @@ public class SignatureUtil {
                 hashposition = (hashposition + word.hashCode()) * primes[primeIndex];
                 hashposition = hashposition % F;
 
-                if(wordbits.get(abs(hashposition)) == false) {
+                if(!wordbits.get(abs(hashposition))) {
                     bitsSet--;
                 } else {
                     wordbits.set(abs(hashposition));

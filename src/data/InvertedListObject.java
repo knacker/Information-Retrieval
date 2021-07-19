@@ -6,9 +6,9 @@ import java.util.List;
 
 public class InvertedListObject {
 
-    private String word;
+    private final String word;
 
-    private List<Tuple<Integer, Integer>> idCount;
+    private final List<Tuple<Integer, Integer>> idCount;
 
     private int continuousPointer;
 
@@ -19,10 +19,7 @@ public class InvertedListObject {
 
     public boolean containsID(int num) {
         for(Tuple<Integer, Integer> ic : idCount) {
-            if(ic.getValue1() == num) {
-                return true;
-            }
-            else return false;
+            return ic.getValue1() == num;
         }
         return false;
     }

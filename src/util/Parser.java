@@ -5,7 +5,6 @@ import data.InvertedListObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Parser {
 
@@ -172,13 +171,10 @@ public class Parser {
             return true;
         }
         if (content.toLowerCase().contains(" " + searchTerms.get(0).toLowerCase() + " ")) {
-            if(matchString(searchTerms.subList(1, searchTerms.size()), content)) {
-                return true;
-            }
+            return matchString(searchTerms.subList(1, searchTerms.size()), content);
         } else {
             return false;
         }
-        return false;
     }
 
 }

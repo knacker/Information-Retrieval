@@ -11,7 +11,7 @@ public class InvertedListChecker {
 
         List<InvertedListObject> checkedDocs = new ArrayList<>();
 
-        String st = "";
+        String st;
         for (int i = 2; i < expression.size(); i++) {
             st = expression.get(i);
             for (InvertedListObject obj : invertedList) {
@@ -31,8 +31,7 @@ public class InvertedListChecker {
 
 
         if (op.equals("|")) {
-            for (int j = 0; j < docsToCheck.size(); j++) {
-                InvertedListObject obj = docsToCheck.get(j);
+            for (InvertedListObject obj : docsToCheck) {
                 for (Tuple<Integer, Integer> idCount : obj.getIdCount()) {
                     docIDs.add(idCount.getValue1());
                 }
@@ -52,7 +51,7 @@ public class InvertedListChecker {
 
                 for (Tuple<Integer, Integer> idCount1 : obj1.getIdCount()) {
                     for (Tuple<Integer, Integer> idCount2 : obj2.getIdCount()) {
-                        if (idCount1.getValue1() == idCount2.getValue1()) {
+                        if (idCount1.getValue1().equals(idCount2.getValue1())) {
                             docIDs.add(idCount1.getValue1());
                         } else {
                             docIDs.remove(idCount1.getValue1());

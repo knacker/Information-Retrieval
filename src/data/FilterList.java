@@ -36,19 +36,6 @@ public class FilterList {
         return new FilterList(lines);
     }
 
-    //grundstamm reduktions liste kommt hier dann hinzu
-    public static FilterList createRE() {
-        //filterlist used for Stopwords
-        List<String> lines = null;
-        try {
-            lines = Files.readAllLines(Paths.get("null"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return new FilterList(lines);
-    }
-
     public List<String> getList() {
         return this.filter;
     }

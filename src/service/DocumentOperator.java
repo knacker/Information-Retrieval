@@ -3,7 +3,6 @@ package service;
 import data.*;
 import util.*;
 
-import javax.print.Doc;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,14 +14,6 @@ import java.util.List;
 public class DocumentOperator {
 
     public DocumentOperator() {
-    }
-
-    public List<Document> searchDocuments(List<Document> docs, List<String> search, Model m) {
-        List<Document> foundDocs = new ArrayList<Document>();
-        if (m == Model.BOOL) {
-            foundDocs = linearSearch(docs, search);
-        }
-        return foundDocs;
     }
 
     public static List<Document> searchSignatures(List<DocumentSignature> docs, List<String> search) {
@@ -63,16 +54,10 @@ public class DocumentOperator {
 
         return foundDocs;
     }
-    public static long convert(BitSet bits) {
-        long value = 0L;
-        for (int i = 0; i < bits.length(); ++i) {
-            value += bits.get(i) ? (1L << i) : 0L;
-        }
-        return value;
-    }
 
     public List<Document> filterWords(List<Document> docs, FilterList filterL) {
-        List<Document> filteredDocs = new ArrayList<Document>();
+
+        List<Document> filteredDocs = new ArrayList<>();
 
         String content;
 
@@ -90,16 +75,12 @@ public class DocumentOperator {
                 content = content.replaceAll(" " + filter + " ", " ");
             }
 
-            // twice, because of a bug
-            for (String filter : filterL.getList()) {
-                content = content.replaceAll(" " + filter + " ", " ");
-            }
-
             Document filteredDoc = new Document(i, doc.getName(), content);
             filteredDocs.add(filteredDoc);
             i++;
 
         }
+
         return filteredDocs;
     }
 
@@ -151,14 +132,6 @@ public class DocumentOperator {
         return reduceDocs;
     }
 
-    public void compareSignature() {
-
-    }
-
-    public void hash() {
-
-    }
-
     public static double calculateRecall(List<String> statement, List<Document> response) {
         int relevante_Dokumente_im_Ergebnis = getNumberOfRelevantDocs(statement, response);
         int gesamte_relevante_Dokumente = getAllRelevantDocs(statement);
@@ -186,9 +159,9 @@ public class DocumentOperator {
     }
 
     /**
-     * @param statement
+     * @param statement irgendwas
      * @param response  of our IR-System
-     * @return
+     * @return number of relevant docs
      */
     public static int getNumberOfRelevantDocs(List<String> statement, List<Document> response) {
 
